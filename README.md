@@ -166,6 +166,27 @@ class MyComponent extends Symbiote {
 MyComponent.reg('my-component');
 ```
 
+```js
+import myData from `../myData.js`;
+
+// SSR component template:
+export default /*html*/ `
+<div>
+  <p>${myData.message}</p>
+  <my-another-component></my-another-component>
+</div>
+`;
+```
+
+```js
+// Component usage:
+export  default /*html*/ `
+<!-- Some HTML -->
+  <my-component></my-component>
+<!-- Some HTML -->
+`;
+```
+
 ## 📚 Documentation
 
 For detailed documentation, examples, and advanced usage patterns, visit:
