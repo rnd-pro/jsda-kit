@@ -152,16 +152,17 @@ body {
 ```javascript
 // components/my-component/index.js
 import { Symbiote } from '@symbiotejs/symbiote';
-import template from './tpl.html.js';
 
 class MyComponent extends Symbiote {
+
+  ssrMode = true;
+
   init$ = {
     message: 'Hello from Web Component!',
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 }
 
-MyComponent.template = template;
 MyComponent.reg('my-component');
 ```
 
