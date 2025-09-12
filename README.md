@@ -167,9 +167,9 @@ MyComponent.reg('my-component');
 ```
 
 ```js
+// SSR component template:
 import myData from `../myData.js`;
 
-// SSR component template:
 export default /*html*/ `
 <div>
   <p>${myData.message}</p>
