@@ -133,7 +133,7 @@ export default /*html*/ `
 const primaryColor = '#007acc';
 const secondaryColor = '#f0f0f0';
 
-export default `
+export default /*css*/ `
 :root {
   --primary: ${primaryColor};
   --secondary: ${secondaryColor};
