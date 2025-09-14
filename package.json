@@ -25,6 +25,9 @@
   "author": "team@rnd-pro.com",
   "type": "module",
   "main": "index.js",
+  "bin": {
+    "jsda": "./cli/index.js"
+  },
   "scripts": {
     "test": "test"
   },

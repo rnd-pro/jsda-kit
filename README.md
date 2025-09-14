@@ -210,7 +210,7 @@ npm install
 
 # Run examples
 cd ref&test/hybrid-app
-node ../../server/cli.js
+node ../../cli/index.js
 ```
 
 ## 📄 License

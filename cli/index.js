@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { createServer } from './JSDAServer.js';
+import { createServer } from '../server/JSDAServer.js';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
