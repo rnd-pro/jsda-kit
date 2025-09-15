@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import CMDs from './commands.js';
 import { createServer } from '../server/JSDAServer.js';
 
 // Parse command line arguments

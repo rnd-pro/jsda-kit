@@ -1,3 +1,3 @@
 export default {
-  '/': './ref/1.html.js',
+  '/': './ref&test/hybrid-app/1.html.js',
 };

@@ -11,6 +11,8 @@ import pth from './pth.js';
 /** @type {Object<string, {type: string, content: string}>} */
 const cache = Object.create(null);
 
+const encPart = '; charset=utf-8';
+
 export function createServer(options = {}) {
   // Override CFG with options
   if (options.cache) {
@@ -23,7 +25,7 @@ export function createServer(options = {}) {
   const DWAServer = http.createServer(async (req, res) => {
 
     if (CFG.cache && cache[req.url]) {
-      res.setHeader('Content-Type', cache[req.url].type);
+      res.setHeader('Content-Type', cache[req.url].type + encPart);
       res.end(cache[req.url].content);
       return;
     }
@@ -39,7 +41,7 @@ export function createServer(options = {}) {
     }
 
     if (req.method !== 'GET') {
-      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Content-Type', 'text/plain' + encPart);
       res.end('Unsupported request method: ' + req.method);
       return;
     }
@@ -48,7 +50,7 @@ export function createServer(options = {}) {
 
     let respond = (type, content) => {
       cache[req.url] = { type, content };
-      res.setHeader('Content-Type', type);
+      res.setHeader('Content-Type', type + encPart);
       res.end(content);
     };
 
@@ -76,7 +78,7 @@ export function createServer(options = {}) {
           treeShaking: true,
           write: false,
         }).outputFiles[0].text;
-        res.setHeader('Content-Type', 'text/javascript');
+        res.setHeader('Content-Type', 'text/javascript' + encPart);
         res.end(js);
       } catch (err) {
         console.log(err);
@@ -93,7 +95,7 @@ export function createServer(options = {}) {
           minify: true,
           write: false,
         }).outputFiles[0].text;
-        res.setHeader('Content-Type', 'text/css');
+        res.setHeader('Content-Type', 'text/css' + encPart);
         res.end(css);
       } catch (err) {
         console.log(err);
