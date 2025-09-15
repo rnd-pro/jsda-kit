@@ -1,3 +1,5 @@
+import CODE_HL from './code.css.js';
+
 export default /*css*/ `
 :root {
   --color-1: #272630;
@@ -67,4 +69,6 @@ test-wc {
   max-width: var(--column-w);
   margin: 2rem auto;
 }
+
+${CODE_HL}
 `;
