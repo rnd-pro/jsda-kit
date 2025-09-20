@@ -29,12 +29,14 @@
     "jsda": "./cli/index.js"
   },
   "scripts": {
+    "jsda-static": "node ./node/watch.js ./ref-test/hybrid-app/static/ ./node/build.js",
+    "jsda-server": "node ./server/index.js",
     "test": "test"
   },
   "dependencies": {
+    "@minify-html/node": "^0.16.4",
     "@symbiotejs/symbiote": "^2.3.3",
     "chalk": "^5.6.2",
-    "dotenv": "^17.2.2",
     "esbuild": "^0.25.9",
     "fastify": "^5.6.0",
     "highlight.js": "^11.11.1",

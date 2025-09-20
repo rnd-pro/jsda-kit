@@ -42,7 +42,8 @@ code {
   }
 }
 
-div[doc] {
+article {
+  display: block;
   padding: calc(var(--gap-max) * 2);
   background-color: rgba(255, 255, 255, .01);
   border-radius: 0.5rem;

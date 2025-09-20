@@ -14,13 +14,14 @@
     "allowJs": true,
     "checkJs": true,
     "strict": false,
-    "alwaysStrict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "types": ["node"],
     "noEmit": true
   },
   "include": [
-    "**/*.js"
+    "**/*.js",
+    "project.cfg.js",
+    "types/"
   ]
 }

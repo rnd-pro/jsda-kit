@@ -1,12 +1,33 @@
+/** @type {JSDA_CFG} */
 export default {
-  routes: './ref&test/hybrid-app/routes.js',
-  pageDataFn: './ref&test/hybrid-app/data.js',
-  ssrComponents: {
-    templates: './ref&test/hybrid-app/wc/{name}/tpl.html.js',
-    scripts: './ref&test/hybrid-app/wc/{name}/index.js',
-    styles: './ref&test/hybrid-app/wc/{name}/style.css',
+
+  dynamic: {
+    port: 3000,
+    routes: './ref-test/hybrid-app/routes.js',
+    cache: {
+      inMemory: true,
+      exclude: [],
+    },
   },
-  cache: true,
-  port: 3000,
-  importmap: true,
+
+  static: {
+    outputDir: './dist',
+    sourceDir: './src',
+  },
+
+  minify: {
+    js: true,
+    css: true,
+    html: true,
+    svg: true,
+    exclude: [],
+  },
+
+  bundle: {
+    js: true,
+    css: true,
+    exclude: [],
+  },
+
+  logging: true,
 }

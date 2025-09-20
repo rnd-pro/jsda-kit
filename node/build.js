@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CFG from './CFG.js';
+import CFG from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
@@ -62,14 +62,14 @@ async function impWa(path) {
   if (!outPath.includes('index.js')) {
     outPath = outPath.replace('.js', '');
   }
-  outPath = outPath.replace(fmtPath(CFG.srcDir), fmtPath(CFG.outDir));
+  outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
   checkDirExists(outPath);
   fs.writeFileSync(outPath, indexSrc);
   console.log('Output file created: ' + outPath);
 }
 
 export async function build() {
-  let indexArr = findFiles(CFG.srcDir, ['index.', '.js'], []);
+  let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
   console.log('Processing DWA files:');
   console.log(indexArr);
   await Promise.all(indexArr.map(processIndex));

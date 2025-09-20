@@ -73,7 +73,7 @@ jsda-kit/
 │   ├── watch.js         # File watching
 │   ├── findFiles.js     # File system utilities
 │   └── getImportMap.js  # Import map generation
-└── 📁 ref&test/         # Reference implementations & examples
+└── 📁 ref-test/         # Reference implementations & examples
     └── hybrid-app/      # Example hybrid application
 ```
 
@@ -192,7 +192,7 @@ export  default /*html*/ `
 For detailed documentation, examples, and advanced usage patterns, visit:
 - [Server Documentation](./server/README.md)
 - [API Reference](https://github.com/rnd-pro/jsda-kit/wiki)
-- [Examples](./ref&test/)
+- [Examples](./ref-test/)
 
 ## 🤝 Contributing
 
@@ -209,7 +209,7 @@ cd jsda-kit
 npm install
 
 # Run examples
-cd ref&test/hybrid-app
+cd ref-test/hybrid-app
 node ../../cli/index.js
 ```
 

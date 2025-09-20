@@ -11,6 +11,16 @@ export const MIME_TYPES = {
   webp: 'image/webp',
   webm: 'video/webm',
   mp4: 'video/mp4',
+  js: 'application/javascript',
+  wasm: 'application/wasm',
+  mp3: 'audio/mp3',
+  ogg: 'audio/ogg',
+  wav: 'audio/wav',
+  pdf: 'application/pdf',
+  zip: 'application/zip',
+  rar: 'application/x-rar-compressed',
+  '7z': 'application/x-7z-compressed',
+  gz: 'application/gzip',
 };
 
 export default MIME_TYPES;

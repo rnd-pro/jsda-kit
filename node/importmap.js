@@ -3,8 +3,6 @@ import process from 'process';
 
 let packages = (await import(process.cwd() + '/project.cfg.js')).default?.networkPackages || [
   '@symbiotejs/symbiote',
-  '@jam-do/ims',
-  'jam-x',
 ];
 
 /**
@@ -17,7 +15,7 @@ let packages = (await import(process.cwd() + '/project.cfg.js')).default?.networ
  * @param {String} [cdnSrcScheme] url string template for the package imports. Use {{PKG}} as a package name placeholder
  * @returns {String}
  */
-export default function getImportMap(
+export function getImportMap(
   pkgList = packages, 
   useVersion = true,
   cdnSrcScheme = 'https://cdn.jsdelivr.net/npm/{{PKG}}/+esm'
@@ -56,4 +54,4 @@ export default function getImportMap(
   `.trim();
 }
 
-export { getImportMap }
+export default getImportMap();

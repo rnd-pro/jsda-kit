@@ -16,7 +16,7 @@ export async function ssr(html, tplPathSchema, data = {}) {
   const matches = html.matchAll(/<([a-z]+-[\w-]+)(?:\s+[^>]*)?>/g);
   for (const match of matches) {
     const [fullMatch, tagName] = match;
-    let tplPath = tplPathSchema.replace('{name}', tagName);
+    let tplPath = tplPathSchema.replace('{tag-name}', tagName);
     let tpl = '';
     
     if (tplPath.endsWith('.html')) {

@@ -2,6 +2,7 @@
 /.idea
 /.vscode
 /.agicoder
+/.qoder
 
 ## system files
 .DS_Store
@@ -9,6 +10,7 @@
 ## npm
 /node_modules/
 /npm-debug.log
+/package-lock.json
 
 ## dev
 TMP
@@ -19,3 +21,7 @@ env
 ## Cloud Images Toolkit
 cit/cit-store/
 cit/CIT_API_KEY
+
+## Runtime
+secrets/
+.env

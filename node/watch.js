@@ -1,22 +1,30 @@
 import fs from 'fs';
 import { execFile } from 'child_process';
+import CFG from '../cfg/CFG.js';
+import { log } from './log.js';
 
-let srcDir = process.argv[2] || process.env.SRC_DIR || './src/';
-let processor = process.argv[3] || process.env.HANDLER_SCRIPT_PATH || './node_modules/@jam-do/jam-tools/node/build.js';
+let processor = process.argv[3] || './node_modules/jsda-kit/node/build.js';
+let localPath = './node/build.js';
+
+if (fs.existsSync(localPath)) {
+  processor = localPath;
+}
 
 let watchTimeout;
 /** @type {import('child_process').ChildProcess} */
 let cp;
 
+let src = process.argv[2] || CFG.static.sourceDir || './src';
+
 function onFsChange() {
-  cp = execFile('node', [processor], (err, stdout, stderr) => {
+  cp = execFile('node', [processor, src], (err, stdout, stderr) => {
     err && console.error(err);
-    stdout && console.log(stdout);
+    stdout && log(stdout);
     stderr && console.error(stderr);
   });
 }
 
-fs.watch(srcDir, {
+fs.watch(src, {
   recursive: true,
 }, () => {
   if (watchTimeout) {
