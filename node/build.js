@@ -71,18 +71,6 @@ async function impWa(path) {
 
 export async function build() {
   let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
-  Log.msg('Processing DWA files:', indexArr);
+  Log.msg('Processing JSDA entries:', indexArr);
   await Promise.all(indexArr.map(processIndex));
-}
-
-try {
-  await build().then(() => {
-    process.exit(0);
-  }).catch((e) => {
-    Log.err(e.message);
-    process.exit(1);
-  });
-} catch (e) {
-  Log.err(e.message);
-  process.exit(1);
 }
