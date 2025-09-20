@@ -1,22 +1,9 @@
-const REPLACE_MAP = {
-  '  ': ' ',
-  ', ': ',',
-  '; ': ';',
-  ': ': ':',
-  ' :': ':',
-  '{ ': '{',
-  ' {': '{',
-  '} ': '}',
-  ' }': '}',
-};
+import { Buffer } from "node:buffer";
+import minifyHtml from "@minify-html/node";
 
 /** @param {String} css */
 export function cssMin(css) {
-  css = css.replaceAll('\n', ' ');
-  for (let subStr in REPLACE_MAP) {
-    while (css.includes(subStr)) {
-      css = css.replaceAll(subStr, REPLACE_MAP[subStr]);
-    }
-  }
-  return css;
+  return minifyHtml.minify(Buffer.from(`<style>${css}</style>`), {
+    minify_css: true,
+  }).toString().replace(/<style>/, '').replace(/<\/style>/, '');
 }

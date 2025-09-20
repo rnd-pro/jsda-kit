@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { execFile } from 'child_process';
 import CFG from '../cfg/CFG.js';
-import { log } from './log.js';
+import { Log } from './Log.js';
 
 let processor = process.argv[3] || './node_modules/jsda-kit/node/build.js';
 let localPath = './node/build.js';
@@ -18,9 +18,9 @@ let src = process.argv[2] || CFG.static.sourceDir || './src';
 
 function onFsChange() {
   cp = execFile('node', [processor, src], (err, stdout, stderr) => {
-    err && console.error(err);
-    stdout && log(stdout);
-    stderr && console.error(stderr);
+    err && Log.err('JSDA Static error: ', err);
+    stdout && Log.msg(stdout);
+    stderr && Log.err(stderr);
   });
 }
 

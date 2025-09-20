@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { Log } from './Log.js';
 
 /**
  * 
@@ -11,7 +12,7 @@ import path from 'path';
 export function findFiles(startPath, include, exclude) {
 
   if (!fs.existsSync(startPath)) {
-    console.log('findFiles error: invalid start path >', startPath);
+    Log.err('findFiles error:', 'invalid start path >', startPath);
     return;
   }
 

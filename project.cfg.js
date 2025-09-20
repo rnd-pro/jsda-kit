@@ -12,7 +12,7 @@ export default {
 
   static: {
     outputDir: './dist',
-    sourceDir: './src',
+    sourceDir: './ref-test/hybrid-app/static',
   },
 
   minify: {

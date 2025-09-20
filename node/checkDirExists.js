@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Log } from './Log.js';
 
 /**
  * 
@@ -12,6 +13,6 @@ export function checkDirExists(dirPath) {
     fs.mkdirSync(dir, {
       recursive: true,
     });
-    console.log('Directory created: ' + dir);
+    Log.msg('Directory created: ', dir);
   }
 }

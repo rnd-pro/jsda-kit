@@ -1,6 +1,5 @@
-import chalk from 'chalk';
 import pth from '../node/pth.js';
-import { log } from '../node/log.js';
+import { Log } from '../node/Log.js';
 
 /** @type {JSDA_CFG} */
 const defaults = {
@@ -43,8 +42,8 @@ try {
   let cfgObj = (await import(pth('project.cfg.js'))).default;
   Object.assign(cfg, cfgObj);
 } catch(err) {
-  log(chalk.bgRed('DWA Server:') + chalk.white('Error loading config'));
-  log(err);
+  Log.err('DWA Server:', 'Error loading config');
+  Log.err(err);
 }
 
 export { cfg, defaults };

@@ -3,6 +3,7 @@ import CFG from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
+import { Log } from '../node/Log.js';
 
 /**
  * 
@@ -38,12 +39,12 @@ async function impWa(path) {
     let mdlUrl = 'file://' + processRoot + '/' + path;
     try {
       let str = (await import(mdlUrl)).default;
-      if (str.constructor === Function) {
+      if (str?.constructor === Function) {
         str = str();
       }
       result = str;
     } catch (e) {
-      console.log(e);
+      Log.err(e);
     }
   }
   return result;
@@ -65,13 +66,12 @@ async function impWa(path) {
   outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
   checkDirExists(outPath);
   fs.writeFileSync(outPath, indexSrc);
-  console.log('Output file created: ' + outPath);
+  Log.msg('Output file created:', outPath);
 }
 
 export async function build() {
   let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
-  console.log('Processing DWA files:');
-  console.log(indexArr);
+  Log.msg('Processing DWA files:', indexArr);
   await Promise.all(indexArr.map(processIndex));
 }
 
@@ -79,10 +79,10 @@ try {
   await build().then(() => {
     process.exit(0);
   }).catch((e) => {
-    console.log(e.message);
+    Log.err(e.message);
     process.exit(1);
   });
 } catch (e) {
-  console.log(e.message);
+  Log.err(e.message);
   process.exit(1);
 }

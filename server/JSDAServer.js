@@ -1,14 +1,12 @@
 import http from 'http';
 import fs from 'fs';
-import CFG from '../cfg/CFG.js/index.js';
+import CFG from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
 import { htmlMin } from '../iso/htmlMin.js';
-import { getImportMap } from '../node/importmap.js';
 import esbuild from 'esbuild';
-import { ssr } from '../node/ssr.js';
 import pth from '../node/pth.js';
 import { getExternalDeps } from './getExternalDeps.js';
-import { log } from '../node/log.js';
+import { Log } from '../node/Log.js';
 
 /** @type {Object<string, {type: string, content: string}>} */
 const cache = Object.create(null);
@@ -47,7 +45,7 @@ export function createServer(options = {}) {
       return;
     }
 
-    log(`🚀 ${req.method} ${req.url}`);
+    Log.msg(`🚀 ${req.method}`, req.url);
 
     if (req.method === 'OPTIONS') {
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -98,7 +96,7 @@ export function createServer(options = {}) {
         res.setHeader('Content-Type', 'text/javascript' + encPart);
         res.end(js);
       } catch (err) {
-        log(err);
+        Log.err(err);
         respond('text/plain', 'JS BUNDLE ERROR');
       }
       return;
@@ -115,7 +113,7 @@ export function createServer(options = {}) {
         res.setHeader('Content-Type', 'text/css' + encPart);
         res.end(css);
       } catch (err) {
-        log(err);
+        Log.err(err);
         respond('text/plain', 'CSS BUNDLE ERROR');
       }
       return;
@@ -128,11 +126,11 @@ export function createServer(options = {}) {
         if (typeof fileTxt === 'string') {
           respond(MIME_TYPES[fileExt], fileTxt);
         } else {
-          log('JSDA IMPORT ERROR: ' + req.url + ' > ' + dwaPath + params);
+          Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + dwaPath + params);
           respond('text/plain', 'JSDA IMPORT ERROR');
         }
       } catch (err) {
-        log(err);
+        Log.err(err);
         respond('text/plain', 'JSDA IMPORT ERROR');
       }
       return;
@@ -158,7 +156,7 @@ export function createServer(options = {}) {
         let html = (await import(pth(routes[route]) + params)).default;
         respond('text/html', htmlMin(html));
       } catch (err) {
-        log(err);
+        Log.err(err);
         respond('text/plain', 'JSDA IMPORT ERROR');
         return;
       }
@@ -168,7 +166,7 @@ export function createServer(options = {}) {
   });
 
   DWAServer.listen(CFG.dynamic.port, () => {
-    log(`✅ HTTP server started: http://localhost:${CFG.dynamic.port}`);
+    Log.msg('✅ HTTP server started:', `http://localhost:${CFG.dynamic.port}`);
   });
 
   return DWAServer;
