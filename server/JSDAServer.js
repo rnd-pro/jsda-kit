@@ -2,7 +2,8 @@ import http from 'http';
 import fs from 'fs';
 import CFG from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
-import { htmlMin } from '../iso/htmlMin.js';
+import { htmlMin } from '../node/htmlMin.js';
+import { cssMin } from '../node/cssMin.js';
 import esbuild from 'esbuild';
 import pth from '../node/pth.js';
 import { getExternalDeps } from './getExternalDeps.js';
@@ -39,7 +40,7 @@ export function createServer(options = {}) {
 
   const DWAServer = http.createServer(async (req, res) => {
 
-    if (CFG.dynamic.cache.inMemory && cache[req.url]) {
+    if (CFG.dynamic.cache.inMemory && !CFG.dynamic.cache.exclude.includes(req.url) && cache[req.url]) {
       res.setHeader('Content-Type', cache[req.url].type + encPart);
       res.end(cache[req.url].content);
       return;
@@ -68,9 +69,6 @@ export function createServer(options = {}) {
       res.setHeader('Content-Type', type + encPart);
       res.end(content);
     };
-
-    /** @type {Object<string, string>} */
-    let ssrData = {};
     
     let fileName = req.url
       .split('/')
@@ -84,10 +82,10 @@ export function createServer(options = {}) {
         let entry = '.' + req.url;
         let js = esbuild.buildSync({
           entryPoints: [entry],
-          bundle: true,
+          bundle: !CFG.bundle.exclude.includes(req.url) && CFG.bundle.js,
           format: 'esm',
           target: 'esnext',
-          minify: true,
+          minify: !CFG.minify.exclude.includes(req.url) && CFG.minify.js,
           sourcemap: false,
           external: getExternalDeps(),
           treeShaking: true,
@@ -96,7 +94,7 @@ export function createServer(options = {}) {
         res.setHeader('Content-Type', 'text/javascript' + encPart);
         res.end(js);
       } catch (err) {
-        Log.err(err);
+        Log.err('JS error:', err);
         respond('text/plain', 'JS BUNDLE ERROR');
       }
       return;
@@ -106,14 +104,14 @@ export function createServer(options = {}) {
         let entry = '.' + req.url;
         let css = esbuild.buildSync({
           entryPoints: [entry],
-          bundle: true,
-          minify: true,
+          bundle: !CFG.bundle.exclude.includes(req.url) && CFG.bundle.css,
+          minify: !CFG.minify.exclude.includes(req.url) && CFG.minify.css,
           write: false,
         }).outputFiles[0].text;
         res.setHeader('Content-Type', 'text/css' + encPart);
         res.end(css);
       } catch (err) {
-        Log.err(err);
+        Log.err('CSS error:', err);
         respond('text/plain', 'CSS BUNDLE ERROR');
       }
       return;

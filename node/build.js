@@ -4,8 +4,8 @@ import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
 import { Log } from '../node/Log.js';
-import { htmlMin } from '../iso/htmlMin.js';
-import { cssMin } from '../iso/cssMin.js';
+import { htmlMin } from './htmlMin.js';
+import { cssMin } from './cssMin.js';
 
 /**
  * 
