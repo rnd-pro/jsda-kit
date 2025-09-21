@@ -1,4 +1,5 @@
 export default /*html*/ `
 <h1>Hello World!</h1>
+<h2>This is a test</h2>
 <button>Push me!</button>
 `;
