@@ -1,20 +1,32 @@
 #!/usr/bin/env node
 
 import CMDs from './commands.js';
-import { createServer } from '../server/JSDAServer.js';
+import { Log } from '../node/Log.js';
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-let port = parseInt(args[args.indexOf('--port') + 1]);
-let cacheOff = args.includes('--disable-cache');
-let options = {};
-if (port) {
-  options.port = port;
+/** @type {Record<keyof CMDs, () => void>} */
+const CMD_MAP = {
+
+  ssg: () => {
+    import('../node/watch.js');
+  },
+
+  serve: () => {
+    import('../server/index.js');
+  },
+
+  build: () => {
+    import('../node/ci.js');
+  },
+
+  scaffold: () => {
+    Log.info('JSDA CLI:', 'CREATE PROJECT STRUCTURE');
+  },
+
+};
+
+try {
+  CMD_MAP[process.argv[2]]();
+} catch (e) {
+  Log.err('JSDA CLI ERROR:', e);
 }
-if (cacheOff) {
-  options.cache = false;
-}
 
-
-// Start the server with the provided options
-createServer(options);

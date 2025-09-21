@@ -1,7 +1,6 @@
 export default {
-  'dev': 'DEV',
+  'ssg': 'SSG',
+  'serve': 'SERVE',
   'scaffold': 'SCAFFOLD',
-  'publish': 'PUBLISH',
   'build': 'BUILD',
-  'run': 'RUN',
 };
