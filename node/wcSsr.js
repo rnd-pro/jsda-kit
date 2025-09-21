@@ -4,11 +4,11 @@ import pth from './pth.js';
 /**
  * 
  * @param {String} html HTML with Custom Elements to render  
- * @param {String} tplPathSchema Component template path schema (e.g. './ref/wc/{tag-name}/tpl.html')
+ * @param {String} tplPathSchema WC template path schema (e.g. './ref/wc/{tag-name}/tpl.html')
  * @param {Object<string, string>} [data] Data to render
  * @returns {Promise<String>} Rendered HTML string
  */
-export async function ssr(html, tplPathSchema, data = {}) {
+export async function wcSsr(html, tplPathSchema, data = {}) {
   Object.keys(data).forEach((key) => {
     html = html.replaceAll(`{[${key}]}`, data[key]);
   });
@@ -27,7 +27,7 @@ export async function ssr(html, tplPathSchema, data = {}) {
     
     if (tpl) {
       if (!tpl.includes(`<${tagName}`)) {
-        tpl = await ssr(tpl, tplPathSchema, data);
+        tpl = await wcSsr(tpl, tplPathSchema, data);
       } else {
         tpl = '';
         console.warn(`[SSR] Endless loop detected for component ${tagName}`);
