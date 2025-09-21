@@ -7,5 +7,5 @@ export function htmlMin(html) {
     minify_css: true,
     minify_js: true,
     keep_comments: false,
-  });
+  }).toString();
 }

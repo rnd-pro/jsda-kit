@@ -4,6 +4,8 @@ import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
 import { Log } from '../node/Log.js';
+import { htmlMin } from '../iso/htmlMin.js';
+import { cssMin } from '../iso/cssMin.js';
 
 /**
  * 
@@ -59,18 +61,28 @@ async function impWa(path) {
   if (!indexSrc) {
     return;
   }
+ 
   let outPath = fmtPath(indexPath);
   if (!outPath.includes('index.js')) {
     outPath = outPath.replace('.js', '');
   }
   outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
+
+  if (outPath.includes('/index.html') && CFG.minify.html) {
+    indexSrc = htmlMin(indexSrc).toString();
+  }
+
+  if (outPath.includes('/index.css')) {
+    indexSrc = cssMin(indexSrc);
+  }
+
   checkDirExists(outPath);
   fs.writeFileSync(outPath, indexSrc);
-  Log.msg('Output file created:', outPath);
+  Log.info('Output file created:', outPath);
 }
 
 export async function build() {
   let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
-  Log.msg('Processing JSDA entries:', indexArr);
+  Log.info('Processing JSDA entries:', indexArr);
   await Promise.all(indexArr.map(processIndex));
 }

@@ -3,8 +3,8 @@ import pth from './pth.js';
 
 /**
  * 
- * @param {String} html HTML to render  
- * @param {String} tplPathSchema Component template path schema (e.g. './ref/wc/{name}/tpl.html')
+ * @param {String} html HTML with Custom Elements to render  
+ * @param {String} tplPathSchema Component template path schema (e.g. './ref/wc/{tag-name}/tpl.html')
  * @param {Object<string, string>} [data] Data to render
  * @returns {Promise<String>} Rendered HTML string
  */

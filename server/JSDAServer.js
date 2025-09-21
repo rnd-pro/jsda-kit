@@ -45,7 +45,7 @@ export function createServer(options = {}) {
       return;
     }
 
-    Log.msg(`🚀 ${req.method}`, req.url);
+    Log.info(req.method, req.url);
 
     if (req.method === 'OPTIONS') {
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -149,8 +149,6 @@ export function createServer(options = {}) {
     let route = req.url.split('?')[0];
     route.endsWith('/') || (route += '/');
     let routes = (await import(pth(CFG.dynamic.routes))).default;
-    // let importMap = getImportMap(['@symbiotejs/symbiote']);
-    // ssrData.importMap = importMap;
     if (routes[route]) {
       try {
         let html = (await import(pth(routes[route]) + params)).default;
@@ -166,7 +164,7 @@ export function createServer(options = {}) {
   });
 
   DWAServer.listen(CFG.dynamic.port, () => {
-    Log.msg('✅ HTTP server started:', `http://localhost:${CFG.dynamic.port}`);
+    Log.success('HTTP server started:', `http://localhost:${CFG.dynamic.port}`);
   });
 
   return DWAServer;

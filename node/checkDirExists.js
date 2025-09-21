@@ -13,6 +13,6 @@ export function checkDirExists(dirPath) {
     fs.mkdirSync(dir, {
       recursive: true,
     });
-    Log.msg('Directory created: ', dir);
+    Log.info('Directory created: ', dir);
   }
 }
