@@ -28,6 +28,13 @@ declare type JSDA_CFG = {
     exclude: string[];
   };
 
-  logging: boolean;
+  log: boolean;
+
+  importmap: {
+    packageList: string[];
+    srcSchema: string; // Example: https://cdn.jsdelivr.net/npm/{pkg-name}/+esm
+    polyfills: boolean;
+    preload: boolean;
+  };
 
 };

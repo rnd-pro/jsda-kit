@@ -31,7 +31,15 @@ const defaults = {
     exclude: [],
   },
 
-  logging: true,
+  log: true,
+
+  importmap: {
+    packageList: [],
+    srcSchema: 'https://cdn.jsdelivr.net/npm/{pkg-name}/+esm',
+    polyfills: false,
+    preload: true,
+  },
+  
 }
 
 /** @type {JSDA_CFG} */

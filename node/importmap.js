@@ -1,9 +1,7 @@
 import fs from 'fs';
-import process from 'process';
+import CFG from '../cfg/CFG.js';
 
-let packages = (await import(process.cwd() + '/project.cfg.js')).default?.networkPackages || [
-  '@symbiotejs/symbiote',
-];
+let packages = CFG.importmap.packageList;
 
 /**
  * This function creates an HTML-chunk with importmap and preload links 
@@ -18,7 +16,7 @@ let packages = (await import(process.cwd() + '/project.cfg.js')).default?.networ
 export function getImportMap(
   pkgList = packages, 
   useVersion = true,
-  cdnSrcScheme = 'https://cdn.jsdelivr.net/npm/{{PKG}}/+esm'
+  cdnSrcScheme = CFG.importmap.srcSchema,
 ) {
 
   let hostPkg = JSON.parse(fs.readFileSync('./package.json').toString());
@@ -33,7 +31,7 @@ export function getImportMap(
    * @returns {String}
    */
   let getUrl = (pkgName) => {
-    return cdnSrcScheme.replaceAll('{{PKG}}', pkgName);
+    return cdnSrcScheme.replaceAll('{pkg-name}', pkgName);
   }
   
   pkgList.forEach((pkg) => {
@@ -41,16 +39,22 @@ export function getImportMap(
     iMap.imports[pkg] = getUrl(pkg + version);
   });
 
-  return /*html*/ `
-    <script type="importmap">${JSON.stringify(iMap, undefined, 2)}</script>
+  let polyfills = /*html*/ `
     <!-- Import maps polyfill for older browsers without import maps support (eg Safari 16.3) -->
     <script async src="${getUrl('es-module-shims')}" crossorigin="anonymous" type="module"></script>
     <!-- Customizable built-in elements polyfill (Safari) -->
     <script async src="${getUrl('@ungap/custom-elements')}" crossorigin="anonymous" type="module"></script>
-    <!-- Preload dependencies for speed -->
-    ${Object.values(iMap.imports).map((url) => {
-      return /*html*/ `<link rel="modulepreload" href="${url}"/>`;
-    }).join('\n')}
+  `;
+
+  let preload = Object.values(iMap.imports).map((url) => {
+    return /*html*/ `<!-- Preload dependencies for speed -->
+    <link rel="modulepreload" href="${url}"/>`;
+  }).join('\n');
+
+  return /*html*/ `
+    <script type="importmap">${JSON.stringify(iMap, undefined, 2)}</script>
+    ${CFG.importmap.polyfills ? polyfills : ''}
+    ${CFG.importmap.preload ? preload : ''}
   `.trim();
 }
 

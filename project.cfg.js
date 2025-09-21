@@ -29,5 +29,15 @@ export default {
     exclude: [],
   },
 
-  logging: true,
+  log: true,
+
+  importmap: {
+    packageList: [
+      '@symbiotejs/symbiote',
+    ],
+    srcSchema: 'https://cdn.jsdelivr.net/npm/{pkg-name}/+esm',
+    polyfills: false,
+    preload: true,
+  },
+
 }
