@@ -28,6 +28,10 @@ function isJsda(url) {
   return result;
 }
 
+function getExt(url) {
+  return url.split('/').pop().split('.js')[0].split('.').pop().toLowerCase();
+}
+
 export function createServer(options = {}) {
   // Override CFG with options
   if (options.cache) {
@@ -96,10 +100,16 @@ export function createServer(options = {}) {
     } else if (isJsda(req.url)) {
       // Handle any JSDA:
       try {
-        let fileExt = req.url.split('/').pop().split('.js')[0].split('.').pop().toLowerCase();
+        let fileExt = getExt(req.url);
         let dwaPath = pth(req.url, true);
         let fileTxt = (await import(dwaPath + params)).default;
         if (typeof fileTxt === 'string') {
+          if (fileExt === 'html' && CFG.minify.html) {
+            fileTxt = htmlMin(fileTxt);
+          }
+          if (fileExt === 'css' && CFG.minify.css) {
+            fileTxt = cssMin(fileTxt);
+          }
           respond(MIME_TYPES[fileExt], fileTxt);
         } else {
           Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + dwaPath + params);
@@ -113,8 +123,15 @@ export function createServer(options = {}) {
     } else if (Object.keys(MIME_TYPES).find(type => req.url.includes('.' + type))) { 
       // Handle other static files:
       if (fs.existsSync('.' + req.url)) {
-        let file = fs.readFileSync('.' + req.url);
-        respond(MIME_TYPES[req.url.split('.')[1].split('?')[0].toLowerCase()], file);
+        let fileTxt = fs.readFileSync('.' + req.url).toString();
+        let fileExt = getExt(req.url);
+        if (fileExt === 'html' && CFG.minify.html) {
+          fileTxt = htmlMin(fileTxt);
+        }
+        if (fileExt === 'css' && CFG.minify.css) {
+          fileTxt = cssMin(fileTxt);
+        }
+        respond(MIME_TYPES[req.url.split('.')[1].split('?')[0].toLowerCase()], fileTxt);
       } else {
         respond('text/plain', '404');
       }
