@@ -23,6 +23,8 @@ A comprehensive, isomorphic JavaScript toolkit for building modern web applicati
 - **🎨 Dynamic Styling**: JavaScript-powered CSS with Shadow DOM support
 - **📊 Performance Optimized**: Fast in-memory caching for production
 - **🧩 Extensible**: Clean APIs for custom middleware and extensions
+- **📝 TypeScript Ready**: Full TypeScript support with comprehensive type definitions
+- **🛠️ CLI**: Powerful command-line interface with hot reload and build tools
 
 ## 🚀 Quick Start
 
@@ -32,7 +34,23 @@ A comprehensive, isomorphic JavaScript toolkit for building modern web applicati
 npm install jsda-kit
 ```
 
-### Basic Usage
+### CLI Usage (Recommended)
+
+```bash
+# Start development server
+jsda serve
+
+# Build static site
+jsda build
+
+# Start SSG (Static Site Generation) with file watching
+jsda ssg
+
+# Create project structure
+jsda scaffold
+```
+
+### Programmatic Usage
 
 ```javascript
 // Start a JSDA server
@@ -45,36 +63,6 @@ const server = new JSDAServer({
 });
 
 server.start();
-```
-
-## 📁 Project Structure
-
-JSDA-Kit follows a modular architecture with clear separation of concerns:
-
-```
-jsda-kit/
-├── 📁 server/           # Core server implementation
-│   ├── JSDAServer.js    # Main HTTP server
-│   ├── ssr.js           # Server-side rendering engine
-│   ├── pth.js           # Path resolution utilities
-│   ├── CFG.js           # Configuration management
-│   └── cli.js           # Command-line interface
-├── 📁 browser/          # Browser-specific utilities
-│   ├── IDB.js           # IndexedDB wrapper
-│   └── b64Src.js        # Base64 encoding
-├── 📁 iso/              # Isomorphic tools (universal)
-│   ├── buildHtml.js     # HTML generation
-│   ├── cssMin.js        # CSS minification
-│   ├── jsMin.js         # JavaScript minification
-│   ├── md2html.js       # Markdown to HTML conversion
-│   └── MIME.js          # MIME type handling
-├── 📁 node/             # Node.js-specific utilities
-│   ├── build.js         # Static build system
-│   ├── watch.js         # File watching
-│   ├── findFiles.js     # File system utilities
-│   └── getImportMap.js  # Import map generation
-└── 📁 ref-test/         # Reference implementations & examples
-    └── hybrid-app/      # Example hybrid application
 ```
 
 ## 🛠️ Core Components
@@ -96,6 +84,11 @@ jsda-kit/
 - **File Watching**: Development mode with hot reload capabilities
 - **Import Maps**: Automatic generation of browser-compatible module maps
 - **Asset Bundling**: Real-time bundling with esbuild integration
+- **Project Structure Analysis**: Automated project tree generation
+
+### TypeScript Support
+- **Type Definitions**: Complete TypeScript definitions for JSDA configuration
+- **IDE Integration**: Enhanced development experience with IntelliSense
 
 ## 🎯 Use Cases
 
@@ -208,9 +201,13 @@ cd jsda-kit
 # Install dependencies
 npm install
 
-# Run examples
-cd ref-test/hybrid-app
-node ../../cli/index.js
+# Run example with CLI
+jsda serve
+
+# Or run specific commands
+jsda ssg     # Static Site Generation with watching
+jsda build   # Build static files
+jsda scaffold # Create project structure
 ```
 
 ## 📄 License
