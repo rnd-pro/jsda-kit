@@ -2,11 +2,10 @@ import http from 'http';
 import fs from 'fs';
 import CFG from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
+import { jsBuild, cssBuild } from './build-asset.js';
 import { htmlMin } from '../node/htmlMin.js';
 import { cssMin } from '../node/cssMin.js';
-import esbuild from 'esbuild';
 import pth from '../node/pth.js';
-import { getExternalDeps } from './getExternalDeps.js';
 import { Log } from '../node/Log.js';
 
 /** @type {Object<string, {type: string, content: string}>} */
@@ -79,40 +78,19 @@ export function createServer(options = {}) {
     if (fileName === 'index.js') {
       // Handle JS bundles:
       try {
-        let entry = '.' + req.url;
-        let js = esbuild.buildSync({
-          entryPoints: [entry],
-          bundle: !CFG.bundle.exclude.includes(req.url) && CFG.bundle.js,
-          format: 'esm',
-          target: 'esnext',
-          minify: !CFG.minify.exclude.includes(req.url) && CFG.minify.js,
-          sourcemap: false,
-          external: getExternalDeps(),
-          treeShaking: true,
-          write: false,
-        }).outputFiles[0].text;
-        res.setHeader('Content-Type', 'text/javascript' + encPart);
-        res.end(js);
+        respond('text/javascript', jsBuild(req.url));
       } catch (err) {
         Log.err('JS error:', err);
-        respond('text/plain', 'JS BUNDLE ERROR');
+        respond('text/plain', 'JS BUILD ERROR');
       }
       return;
     } else if (fileName === 'index.css') { 
       // Handle CSS bundles:
       try {
-        let entry = '.' + req.url;
-        let css = esbuild.buildSync({
-          entryPoints: [entry],
-          bundle: !CFG.bundle.exclude.includes(req.url) && CFG.bundle.css,
-          minify: !CFG.minify.exclude.includes(req.url) && CFG.minify.css,
-          write: false,
-        }).outputFiles[0].text;
-        res.setHeader('Content-Type', 'text/css' + encPart);
-        res.end(css);
+        respond('text/css', cssBuild(req.url));
       } catch (err) {
         Log.err('CSS error:', err);
-        respond('text/plain', 'CSS BUNDLE ERROR');
+        respond('text/plain', 'CSS BUILD ERROR');
       }
       return;
     } else if (isJsda(req.url)) {
