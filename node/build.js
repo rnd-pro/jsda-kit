@@ -38,7 +38,7 @@ async function impWa(path) {
     result = buildResult.outputFiles[0].text;
   } else {
     let processRoot = process.cwd();
-    let mdlUrl = 'file://' + processRoot + '/' + path + `?${Date.now()}`;
+    let mdlUrl = 'file://' + processRoot + '/' + path;
     try {
       let str = (await import(mdlUrl)).default;
       if (str?.constructor === Function) {
