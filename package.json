@@ -29,8 +29,8 @@
     "jsda": "./cli/index.js"
   },
   "scripts": {
-    "jsda-static": "node ./node/watch.js ./ref-test/hybrid-app/static/ ./node/build.js",
-    "jsda-server": "node ./server/index.js",
+    "jsda-ssg": "node ./node/watch.js",
+    "jsda-serve": "node ./server/index.js",
     "test": "test"
   },
   "dependencies": {
