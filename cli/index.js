@@ -3,22 +3,22 @@
 import CMDs from './commands.js';
 import { Log } from '../node/Log.js';
 
-/** @type {Record<keyof CMDs, () => void>} */
+/** @type {Record<keyof CMDs, () => Promise<void>>} */
 const CMD_MAP = {
 
-  ssg: () => {
-    import('../node/watch.js');
+  ssg: async () => {
+    await import('../node/watch.js');
   },
 
-  serve: () => {
-    import('../server/index.js');
+  serve: async () => {
+    await import('../server/index.js');
   },
 
-  build: () => {
-    import('../node/ci.js');
+  build: async () => {
+    await import('../node/ci.js');
   },
 
-  scaffold: () => {
+  scaffold: async () => {
     Log.info('JSDA CLI:', 'CREATE PROJECT STRUCTURE');
   },
 
@@ -39,8 +39,9 @@ if (!CMD_MAP[command]) {
 }
 
 try {
-  CMD_MAP[command]();
+  await CMD_MAP[command]();
 } catch (e) {
   Log.err('JSDA CLI ERROR:', e);
+  process.exit(1);
 }
 
