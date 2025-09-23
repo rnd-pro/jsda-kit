@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
-import CMDs from './commands.js';
 import { Log } from '../node/Log.js';
 
-/** @type {Record<keyof CMDs, () => Promise<void>>} */
+/** @type {Record<keyof cli_commands, () => Promise<void>>} */
 const CMD_MAP = {
 
   ssg: async () => {
