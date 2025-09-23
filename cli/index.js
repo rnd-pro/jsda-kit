@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Log } from '../node/Log.js';
+import { scaffold } from './scaffold.js';
 
 /** @type {Record<keyof cli_commands, () => Promise<void>>} */
 const CMD_MAP = {
@@ -18,7 +19,7 @@ const CMD_MAP = {
   },
 
   scaffold: async () => {
-    Log.info('JSDA CLI:', 'CREATE PROJECT STRUCTURE');
+    scaffold();
   },
 
 };
