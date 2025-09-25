@@ -3,18 +3,15 @@ import { execFile } from 'child_process'; // child_process is used to drop neste
 import CFG from '../cfg/CFG.js';
 import { Log } from './Log.js';
 
-let processor = process.argv[3] || './node_modules/jsda-kit/node/ci.js';
-let localPath = './node/ci.js';
-
-if (fs.existsSync(localPath)) {
-  processor = localPath;
-}
+let processor = fs.existsSync('./node_modules/jsda-kit/node/ci.js') 
+  ? './node_modules/jsda-kit/node/ci.js' 
+  : './node/ci.js';
 
 let watchTimeout;
 /** @type {import('child_process').ChildProcess} */
 let cp;
 
-let src = process.argv[2] || CFG.static.sourceDir || './src';
+let src = CFG.static.sourceDir;
 
 /**
  * 
