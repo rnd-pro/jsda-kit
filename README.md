@@ -47,7 +47,7 @@ jsda build
 jsda ssg
 
 # Create project structure
-jsda scaffold
+jsda init
 ```
 
 ### Programmatic Usage
@@ -207,7 +207,7 @@ jsda serve
 # Or run specific commands
 jsda ssg     # Static Site Generation with watching
 jsda build   # Build static files
-jsda scaffold # Create project structure
+jsda init # Create project structure
 ```
 
 ## 📄 License

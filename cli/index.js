@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Log } from '../node/Log.js';
-import { scaffold } from './scaffold.js';
+import { init } from './init.js';
 
 /** @type {Record<keyof cli_commands, () => Promise<void>>} */
 const CMD_MAP = {
@@ -18,8 +18,8 @@ const CMD_MAP = {
     await import('../node/ci.js');
   },
 
-  scaffold: async () => {
-    scaffold();
+  init: async () => {
+    init();
   },
 
 };
