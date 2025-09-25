@@ -3,6 +3,36 @@ import { checkDirExists } from '../node/checkDirExists.js';
 import { defaults } from '../cfg/CFG.js';
 import { Log } from '../node/Log.js';
 
+const gitignore = `
+## editors
+/.idea
+/.vscode
+/.agicoder
+/.qoder
+
+## system files
+.DS_Store
+
+## npm
+/node_modules/
+/npm-debug.log
+/package-lock.json
+
+## dev
+TMP
+build
+dist
+env
+
+## Cloud Images Toolkit
+cit/cit-store/
+cit/CIT_API_KEY
+
+## Runtime
+secrets/
+.env
+`;
+
 const folders = [
   './types',
   './src/static',
@@ -36,6 +66,6 @@ export function init() {
   createFile('./LICENSE', 'MIT');
   createFile('./tsconfig.json', fs.readFileSync('./node_modules/jsda-kit/tsconfig.json', 'utf8'));
   createFile('./.npmrc', 'package-lock=false');
-  createFile('./.gitignore', fs.readFileSync('./node_modules/jsda-kit/.gitignore', 'utf8'));
+  createFile('./.gitignore', gitignore);
 
 }
