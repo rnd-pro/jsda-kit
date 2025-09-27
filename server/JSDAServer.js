@@ -8,7 +8,7 @@ import { cssMin } from '../node/cssMin.js';
 import pth from '../node/pth.js';
 import { Log } from '../node/Log.js';
 
-/** @type {Object<string, {type: string, content: string}>} */
+/** @type {Object<string, {type: string, content: string, code: number}>} */
 const cache = Object.create(null);
 
 const encPart = '; charset=utf-8';
@@ -43,9 +43,21 @@ export function createServer(options = {}) {
 
   const DWAServer = http.createServer(async (req, res) => {
 
+    /**
+     * 
+     * @param {String} type 
+     * @param {String} content 
+     * @param {Number} [code] 
+     */
+    let respond = (type, content, code = 200) => {
+      cache[req.url] = { type, content, code };
+      res.statusCode = code;
+      res.setHeader('Content-Type', type + encPart);
+      res.end(content);
+    };
+
     if (CFG.dynamic.cache.inMemory && !CFG.dynamic.cache.exclude.includes(req.url) && cache[req.url]) {
-      res.setHeader('Content-Type', cache[req.url].type + encPart);
-      res.end(cache[req.url].content);
+      respond(cache[req.url].type, cache[req.url].content, cache[req.url].code);
       return;
     }
 
@@ -66,12 +78,6 @@ export function createServer(options = {}) {
     }
 
     let params = CFG.dynamic.cache.inMemory ? '' : '?' + Date.now();
-
-    let respond = (type, content) => {
-      cache[req.url] = { type, content };
-      res.setHeader('Content-Type', type + encPart);
-      res.end(content);
-    };
     
     let fileName = req.url
       .split('/')
@@ -85,7 +91,7 @@ export function createServer(options = {}) {
         respond('text/javascript', jsBuild(req.url));
       } catch (err) {
         Log.err('JS error:', err);
-        respond('text/plain', 'JS BUILD ERROR');
+        respond('text/plain', 'JS BUILD ERROR', 500);
       }
       return;
     } else if (fileName === 'index.css') { 
@@ -94,7 +100,7 @@ export function createServer(options = {}) {
         respond('text/css', cssBuild(req.url));
       } catch (err) {
         Log.err('CSS error:', err);
-        respond('text/plain', 'CSS BUILD ERROR');
+        respond('text/plain', 'CSS BUILD ERROR', 500);
       }
       return;
     } else if (isJsda(req.url)) {
@@ -113,11 +119,11 @@ export function createServer(options = {}) {
           respond(MIME_TYPES[fileExt], fileTxt);
         } else {
           Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + dwaPath + params);
-          respond('text/plain', 'JSDA IMPORT ERROR');
+          respond('text/plain', 'JSDA IMPORT ERROR', 404);
         }
       } catch (err) {
         Log.err(err);
-        respond('text/plain', 'JSDA IMPORT ERROR');
+        respond('text/plain', 'JSDA IMPORT ERROR', 500);
       }
       return;
     } else if (Object.keys(MIME_TYPES).find(type => req.url.includes('.' + type))) { 
@@ -133,7 +139,7 @@ export function createServer(options = {}) {
         }
         respond(MIME_TYPES[req.url.split('.')[1].split('?')[0].toLowerCase()], fileTxt);
       } else {
-        respond('text/plain', '404');
+        respond('text/plain', '404', 404);
       }
       return;
     }
@@ -148,11 +154,11 @@ export function createServer(options = {}) {
         respond('text/html', htmlMin(html));
       } catch (err) {
         Log.err(err);
-        respond('text/plain', 'JSDA IMPORT ERROR');
+        respond('text/plain', 'JSDA IMPORT ERROR', 500);
         return;
       }
     } else {
-      respond('text/plain', 'ERROR');
+      respond('text/plain', 'ERROR', 404);
     }
   });
 
