@@ -54,14 +54,13 @@ export function createServer(options = {}) {
       res.statusCode = code;
       res.setHeader('Content-Type', type + encPart);
       res.end(content);
+      Log[code === 200 ? 'info' : 'err'](req.method, req.url, code);
     };
 
     if (CFG.dynamic.cache.inMemory && !CFG.dynamic.cache.exclude.includes(req.url) && cache[req.url]) {
       respond(cache[req.url].type, cache[req.url].content, cache[req.url].code);
       return;
     }
-
-    Log.info(req.method, req.url);
 
     if (req.method === 'OPTIONS') {
       res.setHeader('Access-Control-Allow-Origin', '*');
