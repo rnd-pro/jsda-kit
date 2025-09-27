@@ -6,6 +6,7 @@ import esbuild from 'esbuild';
 import { Log } from '../node/Log.js';
 import { htmlMin } from './htmlMin.js';
 import { cssMin } from './cssMin.js';
+import { getExternalDeps } from '../server/getExternalDeps.js';
 
 /**
  * 
@@ -32,6 +33,7 @@ async function impWa(path) {
       bundle: true,
       minify: true,
       sourcemap: false,
+      external: getExternalDeps(),
       target: 'esnext',
       write: false,
     });
