@@ -10,6 +10,7 @@ const defaults = {
       inMemory: true,
       exclude: [],
     },
+    getDataFn: () => {},
   },
 
   static: {

@@ -8,6 +8,7 @@ export default {
       inMemory: true,
       exclude: [],
     },
+    getDataFn: () => {},
   },
 
   static: {

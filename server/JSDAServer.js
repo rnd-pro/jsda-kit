@@ -7,6 +7,7 @@ import { htmlMin } from '../node/htmlMin.js';
 import { cssMin } from '../node/cssMin.js';
 import pth from '../node/pth.js';
 import { Log } from '../node/Log.js';
+import { applyData } from '../iso/applyData.js';
 
 /** @type {Object<string, {type: string, content: string, code: number}>} */
 const cache = Object.create(null);
@@ -150,7 +151,8 @@ export function createServer(options = {}) {
     if (routes[route]) {
       try {
         let html = (await import(pth(routes[route]) + params)).default;
-        respond('text/html', htmlMin(html));
+        let data = (await CFG.dynamic.getDataFn(req.url, req.headers)) || {};
+        respond('text/html', htmlMin(applyData(html, data)));
       } catch (err) {
         Log.err(err);
         respond('text/plain', 'JSDA IMPORT ERROR', 500);

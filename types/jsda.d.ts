@@ -7,6 +7,7 @@ declare type JSDA_CFG = {
       inMemory: boolean;
       exclude: string[];
     };
+    getDataFn: (...args) => Object<string, string>;
   };
 
   static: {
