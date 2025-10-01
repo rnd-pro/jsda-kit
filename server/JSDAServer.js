@@ -58,6 +58,11 @@ export function createServer(options = {}) {
       Log[code === 200 ? 'info' : 'err'](req.method, req.url, code);
     };
 
+    let filePath = req.url.split('?')[0];
+    if (!filePath.includes(CFG.dynamic.baseDir)) {
+      filePath = CFG.dynamic.baseDir + (filePath.startsWith('/') ? filePath.slice(1) : filePath);
+    }
+
     if (CFG.dynamic.cache.inMemory && !CFG.dynamic.cache.exclude.includes(req.url) && cache[req.url]) {
       respond(cache[req.url].type, cache[req.url].content, cache[req.url].code);
       return;
@@ -88,27 +93,27 @@ export function createServer(options = {}) {
     if (fileName === 'index.js') {
       // Handle JS bundles:
       try {
-        respond('text/javascript', jsBuild(req.url));
+        respond('text/javascript', jsBuild(filePath));
       } catch (err) {
-        Log.err('JS error:', err);
-        respond('text/plain', 'JS BUILD ERROR', 500);
+        Log.err('JS build error:', err);
+        respond('text/plain', 'JS ASSET BUILD ERROR', 500);
       }
       return;
     } else if (fileName === 'index.css') { 
       // Handle CSS bundles:
       try {
-        respond('text/css', cssBuild(req.url));
+        respond('text/css', cssBuild(filePath));
       } catch (err) {
-        Log.err('CSS error:', err);
-        respond('text/plain', 'CSS BUILD ERROR', 500);
+        Log.err('CSS build error:', err);
+        respond('text/plain', 'CSS ASSET BUILD ERROR', 500);
       }
       return;
     } else if (isJsda(req.url)) {
       // Handle any JSDA:
       try {
         let fileExt = getExt(req.url);
-        let dwaPath = pth(req.url, true);
-        let fileTxt = (await import(dwaPath + params)).default;
+        // let dwaPath = pth(filePath, true);
+        let fileTxt = (await import(pth(filePath) + params)).default;
         if (typeof fileTxt === 'string') {
           if (fileExt === 'html' && CFG.minify.html) {
             fileTxt = htmlMin(fileTxt);
@@ -118,18 +123,18 @@ export function createServer(options = {}) {
           }
           respond(MIME_TYPES[fileExt], fileTxt);
         } else {
-          Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + dwaPath + params);
-          respond('text/plain', 'JSDA IMPORT ERROR', 404);
+          Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + filePath + params);
+          respond('text/plain', 'JSDA IMPORT ERROR', 500);
         }
       } catch (err) {
-        Log.err(err);
-        respond('text/plain', 'JSDA IMPORT ERROR', 500);
+        Log.err('JSDA File error:', err, filePath + params);
+        respond('text/plain', 'JSDA FILE ERROR', 500);
       }
       return;
     } else if (Object.keys(MIME_TYPES).find(type => req.url.includes('.' + type))) { 
       // Handle other static files:
-      if (fs.existsSync('.' + req.url)) {
-        let fileTxt = fs.readFileSync('.' + req.url).toString();
+      if (fs.existsSync(filePath)) {
+        let fileTxt = fs.readFileSync(filePath).toString();
         let fileExt = getExt(req.url);
         if (fileExt === 'html' && CFG.minify.html) {
           fileTxt = htmlMin(fileTxt);
@@ -155,8 +160,8 @@ export function createServer(options = {}) {
         let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
         respond('text/html', htmlMin(applyData(html, data)));
       } catch (err) {
-        Log.err(err);
-        respond('text/plain', 'JSDA IMPORT ERROR', 500);
+        Log.err('Route error:', err);
+        respond('text/plain', 'JSDA ROUTE ERROR', 500);
         return;
       }
     } else {

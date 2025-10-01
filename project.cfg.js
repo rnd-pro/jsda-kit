@@ -10,7 +10,7 @@ export default {
     },
     getDataFn: async () => { return {} },
     getRouteFn: async () => '',
-    baseDir: './src/',
+    baseDir: './ref-test/hybrid-app/',
   },
 
   static: {

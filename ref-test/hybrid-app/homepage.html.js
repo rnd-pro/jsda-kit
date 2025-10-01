@@ -4,7 +4,7 @@ import importmap from '../../node/importmap.js';
 
 export default /*html*/`
 ${importmap}
-<base href="./ref-test/hybrid-app/">
+<base href="./">
 <script src="./app/app.js" type="module"></script>
 <link rel="stylesheet" href="./css/common.css.js">
 <article>${await md('./README.md')}</article>
