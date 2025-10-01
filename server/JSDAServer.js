@@ -150,7 +150,7 @@ export function createServer(options = {}) {
     let routes = (await import(pth(CFG.dynamic.routes))).default;
     if (routes[route]) {
       try {
-        route = CFG.dynamic.getRouteFn(req.url, req.headers) || route;
+        route = (await CFG.dynamic.getRouteFn(req.url, req.headers)) || route;
         let html = (await import(pth(routes[route]) + params)).default;
         let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
         respond('text/html', htmlMin(applyData(html, data)));

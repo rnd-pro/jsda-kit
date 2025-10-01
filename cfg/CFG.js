@@ -10,8 +10,8 @@ const defaults = {
       inMemory: true,
       exclude: [],
     },
-    getDataFn: () => { return {} },
-    getRouteFn: () => '',
+    getDataFn: async () => { return {} },
+    getRouteFn: async () => '',
     baseDir: './src/',
   },
 
