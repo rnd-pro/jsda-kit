@@ -10,7 +10,9 @@ const defaults = {
       inMemory: true,
       exclude: [],
     },
-    getDataFn: () => {},
+    getDataFn: () => { return {} },
+    getRouteFn: () => '',
+    baseDir: './src/',
   },
 
   static: {

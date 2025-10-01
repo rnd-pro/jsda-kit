@@ -8,7 +8,9 @@ export default {
       inMemory: true,
       exclude: [],
     },
-    getDataFn: () => {},
+    getDataFn: () => { return {} },
+    getRouteFn: () => '',
+    baseDir: './src/',
   },
 
   static: {

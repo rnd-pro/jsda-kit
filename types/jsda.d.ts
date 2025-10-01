@@ -7,7 +7,9 @@ declare type JSDA_CFG = {
       inMemory: boolean;
       exclude: string[];
     };
-    getDataFn: (...args) => Object<string, string>;
+    getRouteFn: (url: string, headers: http.IncomingHttpHeaders) => string;
+    getDataFn: (route: string, url: string, headers: http.IncomingHttpHeaders) => { [key: string]: string };
+    baseDir: string;
   };
 
   static: {
