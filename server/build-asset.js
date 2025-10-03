@@ -2,15 +2,13 @@ import CFG from '../cfg/CFG.js';
 import esbuild from 'esbuild';
 import { getExternalDeps } from './getExternalDeps.js';
 
-
-export function jsBuild(url) {
-  let entry = '.' + url;
+export function jsBuild(entry) {
   return esbuild.buildSync({
     entryPoints: [entry],
-    bundle: !CFG.bundle.exclude.includes(url) && CFG.bundle.js,
+    bundle: !CFG.bundle.exclude.includes(entry) && CFG.bundle.js,
     format: 'esm',
     target: 'esnext',
-    minify: !CFG.minify.exclude.includes(url) && CFG.minify.js,
+    minify: !CFG.minify.exclude.includes(entry) && CFG.minify.js,
     sourcemap: false,
     external: getExternalDeps(),
     treeShaking: true,
@@ -18,12 +16,11 @@ export function jsBuild(url) {
   }).outputFiles[0].text;
 }
 
-export function cssBuild(url) {
-  let entry = '.' + url;
+export function cssBuild(entry) {
   return esbuild.buildSync({
     entryPoints: [entry],
-    bundle: !CFG.bundle.exclude.includes(url) && CFG.bundle.css,
-    minify: !CFG.minify.exclude.includes(url) && CFG.minify.css,
+    bundle: !CFG.bundle.exclude.includes(entry) && CFG.bundle.css,
+    minify: !CFG.minify.exclude.includes(entry) && CFG.minify.css,
     write: false,
   }).outputFiles[0].text;
 }
