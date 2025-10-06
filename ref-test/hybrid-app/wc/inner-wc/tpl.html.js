@@ -1,1 +1,0 @@
-export default /*html*/ `<button bind="onclick: onBtnClick; textContent: btnTxt">INITIAL TEXT</button>`;
