@@ -3,8 +3,8 @@ tui-article {
   position: relative;
   display: flex;
   gap: 2ch;
-  padding-left: 4ch;
-  padding-right: 4ch;
+  padding-left: var(--gap-max);
+  padding-right: var(--gap-max);
   padding-top: 2lh;
   padding-bottom: 3lh;
 

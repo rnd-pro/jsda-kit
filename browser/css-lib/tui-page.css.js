@@ -18,7 +18,7 @@ export default /*css*/ `
   --clr-h3: #ffff00;
   --clr-blockquote: #00ff2f;
   --clr-pre: #53a6ff;
-  --clr-p: #b3ffe7;
+  --clr-p-odd: #b3ffe7;
   --clr-ul: #ffaf4c;
   --clr-ol: #b1ff4c;
   --clr-a: currentColor;
@@ -78,8 +78,8 @@ blockquote, [box] {
   margin-top: 2lh;
   margin-bottom: 2lh;
   position: relative;
-  color: #00ff2f;
-  border: 2px dotted currentColor;
+  color: var(--clr-blockquote);
+  border: var(--gap-min) dotted currentColor;
   padding: 2ch;
 
   &::after {
@@ -89,8 +89,8 @@ blockquote, [box] {
     left: calc(2ch - 4px);
     pointer-events: none;
     background-color: #000;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: var(--gap-min);
+    padding-right: var(--gap-min);
   }
 
   &[caption]::after {
@@ -104,11 +104,11 @@ pre {
   margin: 0;
   margin-top: 2lh;
   margin-bottom: 2lh;
-  color: #53a6ff;
+  color: var(--clr-pre);
   padding: 2ch;
   overflow: hidden;
   overflow-x: auto;
-  border: 2px dotted currentColor;
+  border: var(--gap-min) dotted currentColor;
 }
 
 p {
@@ -116,56 +116,56 @@ p {
   text-shadow: none;
 
   &:nth-of-type(odd) {
-    color: #b3ffe7;
+    color: var(--clr-p-odd);
   }
 }
 
 ul {
-  --bullet-color: #ffaf4c;
+  --bullet-color: var(--clr-ul);
   color: var(--bullet-color);
   position: relative;
   list-style-type: none;
   padding: 0;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: var(--gap-max);
+  margin-bottom: var(--gap-max);
 
   li {
     position: relative;
     display: block;
-    padding: 10px;
-    padding-left: 30px;
-    border-left: 2px dotted var(--bullet-color);
+    padding: var(--gap-mid);
+    padding-left: 3ch;
+    border-left: var(--gap-min) dotted var(--bullet-color);
     margin-bottom: 0;
 
     &::before {
       position: absolute;
       left: 0;
-      top: 50%;
-      width: 10px;
-      height: 2px;
-      border-bottom: 2px dotted var(--bullet-color);
+      top: calc(50% - var(--gap-min));
+      width: var(--gap-mid);
+      height: var(--gap-min);
+      border-bottom: var(--gap-min) dotted var(--bullet-color);
       content: "";
       color: var(--bullet-color);
-      margin-right: 10px;
+      margin-right: var(--gap-mid);
     }
   }
 }
 
 ol {
-  --bullet-color: #b1ff4c;
+  --bullet-color: var(--clr-ol);
   color: var(--bullet-color);
   position: relative;
   list-style-type: none;
   padding: 0;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: var(--gap-max);
+  margin-bottom: var(--gap-max);
   counter-reset: ordered-list;
 
   li {
     position: relative;
     display: block;
-    padding: 10px;
-    padding-left: 40px;
+    padding: var(--gap-mid);
+    padding-left: calc(var(--gap-max) + var(--gap-min));
     margin-bottom: 0;
     counter-increment: ordered-list;
 
@@ -175,12 +175,12 @@ ol {
       align-items: center;
       justify-content: center;
       left: 0;
-      top: 4px;
-      padding: 2px;
+      top: calc(1ch + 3px);
+      padding: var(--gap-min);
       width: calc(1lh + 4px);
       height: calc(1lh + 4px);
       text-align: center;
-      border: 2px dotted var(--bullet-color);
+      border: var(--gap-min) dotted var(--bullet-color);
       border-radius: 100%;
       content: counter(ordered-list);
       color: var(--bullet-color);
