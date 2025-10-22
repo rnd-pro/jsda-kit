@@ -25,7 +25,7 @@ tui-article {
     display: flex;
     flex-direction: column;
     gap: 1lh;
-    top: 2lh;
+    top: calc(2lh + var(--gap-max));
     max-height: calc(100vh - 4lh);
     scrollbar-width: none;
     color: #ff66c4;
