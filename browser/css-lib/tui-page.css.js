@@ -1,4 +1,5 @@
 import code from './code.css.js';
+import tuiShellCom from './tui-shell.css.js';
 import tuiArticleCom from './tui-article.css.js';
 
 export default /*css*/ `
@@ -193,6 +194,7 @@ a {
   color: currentColor
 }
 
+${tuiShellCom}
 ${tuiArticleCom}
 ${code}
 `;
