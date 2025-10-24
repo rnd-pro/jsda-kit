@@ -1,6 +1,7 @@
 import { marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
+import { addHeadingId } from './addHeadingId.js';
 
 marked.use(markedHighlight({
   langPrefix: 'hljs language-',
@@ -15,6 +16,6 @@ marked.use(markedHighlight({
  * Transforms the input markdown text into the HTML format
  * @param {String} mdTxt source markdown
  */
-export function md2html(mdTxt) {
-  return marked.parse(mdTxt);
+export async function md2html(mdTxt) {
+  return addHeadingId(await marked.parse(mdTxt));
 }

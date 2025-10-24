@@ -59,11 +59,8 @@ export class TuiArticle extends Symbiote {
     let mdNav = [];
     headingElements.forEach((headingEl) => {
       let headingText = headingEl.textContent.trim();
-      let headingId = headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
-      if (headingId.startsWith('-')) {
-        headingId = headingId.slice(1);
-      }
-      headingEl.id = headingId;
+      let headingId = headingEl.id || headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
+      !headingEl.id && (headingEl.id = headingId);
       mdNav.push({
         heading: headingText,
         anchor: `#${headingId}`,
