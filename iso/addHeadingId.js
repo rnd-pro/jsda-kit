@@ -11,7 +11,6 @@ export default function addHeadingId(html) {
     if (headingId.startsWith('-')) {
       headingId = headingId.slice(1);
     }
-    console.log(headingId);
     return `<h${level} id="${headingId}">${content}</h${level}>`;
   });
 }
