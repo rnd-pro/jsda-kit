@@ -52,7 +52,9 @@ body {
 }
 
 h1 {
-  margin-bottom: 2lh;
+  margin-top: 0;
+  padding-top: var(--gap-mid);
+  margin-bottom: var(--gap-mid);
   color: var(--clr-h1);
   &::before {
     content: '# ';
@@ -60,7 +62,9 @@ h1 {
 }
 
 h2 {
-  margin-top: 3lh;
+  margin: 0;
+  padding-top: var(--gap-mid);
+  padding-bottom: var(--gap-min);
   color: var(--clr-h2);
   &::before {
     content: '## ';
@@ -68,7 +72,9 @@ h2 {
 }
 
 h3 {
-  margin-top: 3lh;
+  margin: 0;
+  padding-top: var(--gap-mid);
+  padding-bottom: var(--gap-min);
   color: var(--clr-h3);
   &::before {
     content: '### ';

@@ -39,6 +39,7 @@ tui-shell {
   &::part(content) {
     overflow: auto;
     scrollbar-width: none;
+    scroll-behavior: smooth;
   }
 }
 `;

@@ -7,17 +7,27 @@ export class TuiArticle extends Symbiote {
 
   init$ = {
     mdNav: [],
+    currentChapter: '',
   }
 
-  markCurrentChapter(navTarget) {
+  /**
+   * 
+   * @param { HTMLElement } navItem 
+   */
+  markCurrent(navItem) {
+    let link = navItem.querySelector('a');
+    let rect = link.getBoundingClientRect();
+    this.ref.navMark.style.top = `${rect.top + rect.height / 2}px`;
+  }
+
+  onIntersection(navTarget) {
+    if (this.$.currentChapter) return;
     let navItems = [...this.ref.navItems.children];
     let targetNavItem = navItems.find((navItem) => {
       return navItem.$.hElement === navTarget;
     });
     if (targetNavItem) {
-      let link = targetNavItem.querySelector('a');
-      let rect = link.getBoundingClientRect();
-      this.ref.navMark.style.top = `${rect.top + rect.height / 2}px`;
+      this.markCurrent(targetNavItem);
     }
   }
 
@@ -29,7 +39,7 @@ export class TuiArticle extends Symbiote {
         if (entry.isIntersecting) {
           entry.target.classList.add('tui-fade-in');
           if (reactOn.includes(entry.target.tagName)) {
-            this.markCurrentChapter(entry.target);
+            this.onIntersection(entry.target);
           }
         } else {
           entry.target.classList.remove('tui-fade-in');
@@ -50,12 +60,21 @@ export class TuiArticle extends Symbiote {
     headingElements.forEach((headingEl) => {
       let headingText = headingEl.textContent.trim();
       let headingId = headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
+      if (headingId.startsWith('-')) {
+        headingId = headingId.slice(1);
+      }
       headingEl.id = headingId;
       mdNav.push({
         heading: headingText,
         anchor: `#${headingId}`,
         hType: 'nav-item-' + headingEl.tagName.toLowerCase(),
         hElement: headingEl,
+        onClick: () => {
+          this.$.currentChapter = headingId;
+          window.setTimeout(() => {
+            this.$.currentChapter = '';
+          }, 2000);
+        },
       });
     });
     this.$.mdNav = mdNav;
@@ -75,6 +94,15 @@ export class TuiArticle extends Symbiote {
       }
     });
     this.init();
+
+    this.sub('currentChapter', (newChapter) => {
+      console.log('Current chapter changed to:', newChapter);
+      if (!newChapter) return;
+      let currentNavElement = this.ref.navItems.querySelector(`a[href="#${newChapter}"]`);
+      if (currentNavElement) {
+        this.markCurrent(currentNavElement.parentElement);
+      }
+    });
   }
 
   destroyCallback() {
