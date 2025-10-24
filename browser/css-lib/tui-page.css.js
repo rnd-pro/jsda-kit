@@ -200,6 +200,12 @@ a {
   color: currentColor
 }
 
+hr {
+  border: none;
+  border-bottom: var(--gap-min) dotted var(--clr-h1);
+  margin: var(--gap-max) 0;
+}
+
 ${tuiShellCom}
 ${tuiArticleCom}
 ${code}

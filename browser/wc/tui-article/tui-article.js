@@ -96,7 +96,6 @@ export class TuiArticle extends Symbiote {
     this.init();
 
     this.sub('currentChapter', (newChapter) => {
-      console.log('Current chapter changed to:', newChapter);
       if (!newChapter) return;
       let currentNavElement = this.ref.navItems.querySelector(`a[href="#${newChapter}"]`);
       if (currentNavElement) {
