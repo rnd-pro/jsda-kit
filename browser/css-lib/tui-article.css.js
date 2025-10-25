@@ -62,13 +62,14 @@ tui-article {
     font-size: 0.9em;
   }
 
-  & > * {
+  & > *, li {
     transition: opacity .2s ease-in-out;
     transition-delay: .4s;
   }
 
-  & > *:not(.tui-fade-in) {
+  & > *:not(.tui-fade-in), li:not(.tui-fade-in) {
     opacity: 0;
   }
+
 }
 `;

@@ -20,6 +20,10 @@ export class TuiArticle extends Symbiote {
     this.ref.navMark.style.top = `${rect.top + rect.height / 2}px`;
   }
 
+  /**
+   * 
+   * @param { Element } navTarget 
+   */
   onIntersection(navTarget) {
     if (this.$.currentChapter) return;
     let navItems = [...this.ref.navItems.children];
@@ -32,7 +36,7 @@ export class TuiArticle extends Symbiote {
   }
 
   init() {
-    let articleElements = Array.from(this.children);
+    let articleElements = [...this.children, ...this.querySelectorAll('li')];
     let reactOn = ['H1', 'H2', 'H3'];
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -70,7 +74,7 @@ export class TuiArticle extends Symbiote {
           this.$.currentChapter = headingId;
           window.setTimeout(() => {
             this.$.currentChapter = '';
-          }, 2000);
+          }, 1500);
         },
       });
     });
