@@ -37,8 +37,8 @@ export async function wcSsr(html, tplPathSchema, data = {}) {
         tpl = '';
         Log.warn(`[WC SSR] Endless loop detected for component ${tagName}`);
       }
-      html = html.replace(fullMatch, fullMatch + tpl);
     }
+    html = html.replace(fullMatch, fullMatch + tpl);
   }
   
   return html;
