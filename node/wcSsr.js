@@ -1,5 +1,6 @@
 import fs from 'fs';
 import pth from './pth.js';
+import { Log } from './Log.js';
 
 /**
  * 
@@ -22,7 +23,11 @@ export async function wcSsr(html, tplPathSchema, data = {}) {
     if (tplPath.endsWith('.html')) {
       tpl = fs.existsSync(tplPath) ? fs.readFileSync(tplPath, 'utf8') : '';
     } else if (tplPath.endsWith('.js') || tplPath.endsWith('.mjs')) {
-      tpl = (await import(pth(tplPath))).default;
+      try {
+        tpl = (await import(pth(tplPath))).default;
+      } catch (e) {
+        Log.warn('[WC SSR] Template not found for ', tagName);
+      }
     }
     
     if (tpl) {
@@ -30,10 +35,10 @@ export async function wcSsr(html, tplPathSchema, data = {}) {
         tpl = await wcSsr(tpl, tplPathSchema, data);
       } else {
         tpl = '';
-        console.warn(`[SSR] Endless loop detected for component ${tagName}`);
+        Log.warn(`[WC SSR] Endless loop detected for component ${tagName}`);
       }
+      html = html.replace(fullMatch, fullMatch + tpl);
     }
-    html = html.replace(fullMatch, fullMatch + tpl);
   }
   
   return html;
