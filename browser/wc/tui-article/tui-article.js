@@ -67,7 +67,7 @@ export class TuiArticle extends Symbiote {
       !headingEl.id && (headingEl.id = headingId);
       mdNav.push({
         heading: headingText,
-        anchor: `#${headingId}`,
+        anchor: `${window.location.pathname}#${headingId}`,
         hType: 'nav-item-' + headingEl.tagName.toLowerCase(),
         hElement: headingEl,
         onClick: () => {
