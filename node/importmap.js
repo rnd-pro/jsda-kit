@@ -35,8 +35,17 @@ export function getImportMap(
   }
   
   pkgList.forEach((pkg) => {
-    let version = useVersion ? (hostPkg?.dependencies?.[pkg]?.replace('^', '@') || '') : '';
-    iMap.imports[pkg] = getUrl(pkg + version);
+    let localPkgTop = '';
+    if (hostPkg?.dependencies) {
+      localPkgTop = Object.keys(hostPkg.dependencies).find((dep) => {
+        return pkg.includes(dep);
+      });
+    }
+    let version = useVersion ? (hostPkg?.dependencies?.[localPkgTop || pkg]?.replace('^', '@') || '') : '';
+    if (!version.startsWith('@')) {
+      version = '@' + version;
+    }
+    iMap.imports[pkg] = getUrl(pkg.replace(localPkgTop, localPkgTop + version));
   });
 
   let polyfills = /*html*/ `

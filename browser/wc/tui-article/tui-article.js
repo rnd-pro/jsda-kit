@@ -98,7 +98,7 @@ export class TuiArticle extends Symbiote {
 
     this.sub('currentChapter', (newChapter) => {
       if (!newChapter) return;
-      let currentNavElement = this.ref.navItems.querySelector(`a[href="#${newChapter}"]`);
+      let currentNavElement = this.ref.navItems.querySelector(`a[href$="#${newChapter}"]`);
       if (currentNavElement) {
         this.markCurrent(currentNavElement.parentElement);
       }
