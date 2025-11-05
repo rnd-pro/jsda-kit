@@ -5,7 +5,7 @@ import chalk from 'chalk';
 const defaults = {
   dynamic: {
     port: 3000,
-    routes: './src.dynamic/routes.js',
+    routes: './src/dynamic/routes.js',
     cache: {
       inMemory: true,
       exclude: [],
@@ -16,8 +16,8 @@ const defaults = {
   },
 
   static: {
-    outputDir: './dist/static',
-    sourceDir: './src',
+    outputDir: './dist',
+    sourceDir: './src/static',
   },
 
   minify: {
