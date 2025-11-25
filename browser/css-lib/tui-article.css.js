@@ -22,6 +22,7 @@ tui-article {
   &::part(nav) {
     padding: 2ch;
     padding-right: 0;
+    scrollbar-width: none;
   }
 
   &::part(nav-items) {
