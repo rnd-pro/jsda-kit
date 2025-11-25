@@ -318,5 +318,9 @@ tui-article {
       background-color: transparent !important;
     }
   }
+
+  img {
+    max-width: 100%;
+  }
 }
 `;
