@@ -19,9 +19,9 @@ tui-shell {
     flex-direction: column;
     gap: var(--gap-mid);
     top: var(--gap-max);
-    padding: var(--gap-max);
+    padding: var(--gap-mid);
     background-color: var(--clr-h1);
-
+    color: #000;
   }
   &::part(nav-inner)::after {
     position: absolute;

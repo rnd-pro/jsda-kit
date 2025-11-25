@@ -1,6 +1,9 @@
 import Symbiote from '@symbiotejs/symbiote';
 import template from './template.js';
 
+const visibleHElements = new Set();
+const reactOnTags = ['H1', 'H2', 'H3'];
+
 export class TuiArticle extends Symbiote {
 
   renderShadow = true;
@@ -18,6 +21,7 @@ export class TuiArticle extends Symbiote {
     let link = navItem.querySelector('a');
     let rect = link.getBoundingClientRect();
     this.ref.navMark.style.top = `${rect.top + rect.height / 2}px`;
+    this.ref.navMark.style.opacity = 1;
   }
 
   /**
@@ -27,39 +31,47 @@ export class TuiArticle extends Symbiote {
   onIntersection(navTarget) {
     if (this.$.currentChapter) return;
     let navItems = [...this.ref.navItems.children];
-    let targetNavItem = navItems.find((navItem) => {
-      return navItem.$.hElement === navTarget;
-    });
-    if (targetNavItem) {
-      this.markCurrent(targetNavItem);
+    let targetNavItem = navItems[0];
+    if (this.ref.content.scrollTop > 20) {
+      targetNavItem = navItems.find((navItem) => {
+        return navItem.$.hElement === navTarget;
+      });
     }
+    targetNavItem && this.markCurrent(targetNavItem);
+  }
+
+  /**
+   * 
+   * @param { String } headingId 
+   */
+  onChapter(headingId) {
+    this.$.currentChapter = headingId;
+    this.currentChapterTimeout && window.clearTimeout(this.currentChapterTimeout);
+    this.currentChapterTimeout = window.setTimeout(() => {
+      this.$.currentChapter = '';
+    }, 1500);
   }
 
   init() {
     let articleElements = [...this.children, ...this.querySelectorAll('li')];
-    let reactOn = ['H1', 'H2', 'H3'];
     this.intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('tui-fade-in');
-          if (reactOn.includes(entry.target.tagName)) {
-            this.onIntersection(entry.target);
-          }
+          reactOnTags.includes(entry.target.tagName) && visibleHElements.add(entry.target);
         } else {
           entry.target.classList.remove('tui-fade-in');
+          visibleHElements.delete(entry.target);
         }
       });
-      }, {
-        // threshold: 0.1,
-        // rootMargin: '0px 0px -10% 0px',
-      }
+      }, {}
     );
 
     articleElements.forEach(el => {
       this.intersectionObserver.observe(el);
     });
 
-    let headingElements = this.querySelectorAll('h1, h2, h3, h4');
+    let headingElements = this.querySelectorAll(reactOnTags.join(','));
     let mdNav = [];
     headingElements.forEach((headingEl) => {
       let headingText = headingEl.textContent.trim();
@@ -71,14 +83,20 @@ export class TuiArticle extends Symbiote {
         hType: 'nav-item-' + headingEl.tagName.toLowerCase(),
         hElement: headingEl,
         onClick: () => {
-          this.$.currentChapter = headingId;
-          window.setTimeout(() => {
-            this.$.currentChapter = '';
-          }, 1500);
+          this.onChapter(headingId);
         },
       });
     });
     this.$.mdNav = mdNav;
+  }
+
+  intersectedH = null;
+  onScroll() {
+    let newDetection = [...visibleHElements].pop();
+    if (newDetection !== this.intersectedH) {
+      this.intersectedH = newDetection;
+      this.onIntersection(this.intersectedH);
+    }
   }
 
   renderCallback() {
@@ -103,10 +121,26 @@ export class TuiArticle extends Symbiote {
         this.markCurrent(currentNavElement.parentElement);
       }
     });
+
+    this.onScroll = this.onScroll.bind(this);
+    this.ref.content.addEventListener('scroll', this.onScroll, { passive: true });
+
+    window.setTimeout(() => {
+      let chapter = window.location.hash.replace('#', '');
+      if (chapter) {
+        this.onChapter(chapter);
+        let navTarget = this.querySelector(`#${chapter}`);
+        console.log(navTarget);
+        navTarget?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        this.onScroll();
+      }
+    }, 100);
   }
 
   destroyCallback() {
     this.intersectionObserver.disconnect();
+    this.ref.content.removeEventListener('scroll', this.onScroll);
   }
 
 }
