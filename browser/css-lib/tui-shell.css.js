@@ -1,15 +1,12 @@
 export default /*css*/ `
 tui-shell {
+  position: relative;
   display: grid;
   grid-template-columns: min-content auto;
-  grid-template-rows: 100vh;
   min-height: 100vh;
-  width: 100vw;
 
   &::part(nav) {
     position: relative;
-    overflow: auto;
-    scrollbar-width: none;
     padding-left: var(--gap-max);
   }
 
@@ -34,12 +31,6 @@ tui-shell {
     border-bottom: 2px dotted currentColor;
     transform: scaleY(6);
     opacity: .6;
-  }
-
-  &::part(content) {
-    overflow: auto;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
   }
 }
 `;

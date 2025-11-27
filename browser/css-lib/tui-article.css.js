@@ -13,10 +13,6 @@ tui-article {
     width: 100%;
     max-width: 120ch;
     margin: 0 auto;
-    max-height: 100vh;
-    overflow: auto;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
   }
 
   &::part(nav) {

@@ -1,7 +1,7 @@
 import { html } from '@symbiotejs/symbiote';
 
 export default html`
-<article part="content" ref="content">
+<article part="content">
   <slot></slot>
 </article>
 <div part="nav">

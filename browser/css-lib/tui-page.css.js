@@ -39,19 +39,19 @@ export default /*css*/ `
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;
-  min-width: 100vw;
-  background-color: #000;
 }
 
 body {
+  display: block;
   font-family: monospace;
   font-size: large;
   background-color: #000;
   color: #b3eeff;
   text-shadow: 0 0 30px currentColor;
-  background: radial-gradient(#0e110f, #000);
+  background: radial-gradient( #121a15ff, #000);
   background-attachment: fixed;
+  max-height: 100vh;
+  overflow: auto;
 }
 
 ${tuiShellCom}

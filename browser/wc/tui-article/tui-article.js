@@ -32,7 +32,7 @@ export class TuiArticle extends Symbiote {
     if (this.$.currentChapter) return;
     let navItems = [...this.ref.navItems.children];
     let targetNavItem = navItems[0];
-    if (this.ref.content.scrollTop > 20) {
+    if (window.scrollY > 20) {
       targetNavItem = navItems.find((navItem) => {
         return navItem.$.hElement === navTarget;
       });
@@ -59,6 +59,7 @@ export class TuiArticle extends Symbiote {
         if (entry.isIntersecting) {
           entry.target.classList.add('tui-fade-in');
           reactOnTags.includes(entry.target.tagName) && visibleHElements.add(entry.target);
+          this.onScroll();
         } else {
           entry.target.classList.remove('tui-fade-in');
           visibleHElements.delete(entry.target);
@@ -122,15 +123,11 @@ export class TuiArticle extends Symbiote {
       }
     });
 
-    this.onScroll = this.onScroll.bind(this);
-    this.ref.content.addEventListener('scroll', this.onScroll, { passive: true });
-
     window.setTimeout(() => {
       let chapter = window.location.hash.replace('#', '');
       if (chapter) {
         this.onChapter(chapter);
         let navTarget = this.querySelector(`#${chapter}`);
-        console.log(navTarget);
         navTarget?.scrollIntoView({ behavior: 'smooth' });
       } else {
         this.onScroll();
@@ -140,7 +137,6 @@ export class TuiArticle extends Symbiote {
 
   destroyCallback() {
     this.intersectionObserver.disconnect();
-    this.ref.content.removeEventListener('scroll', this.onScroll);
   }
 
 }
