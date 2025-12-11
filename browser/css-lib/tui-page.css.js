@@ -1,5 +1,4 @@
 import code from './code.css.js';
-import tuiShellCom from './tui-shell.css.js';
 import tuiArticleCom from './tui-article.css.js';
 
 export default /*css*/ `
@@ -54,7 +53,6 @@ body {
   overflow: auto;
 }
 
-${tuiShellCom}
 ${tuiArticleCom}
 ${code}
 `;
