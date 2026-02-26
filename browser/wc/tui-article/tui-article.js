@@ -101,18 +101,18 @@ export class TuiArticle extends Symbiote {
   }
 
   renderCallback() {
-    this.sub('src', async (newSrc) => {
-      if (!newSrc) return;
-      let resp = await fetch(newSrc);
-      let mdText = await resp.text();
-      if (mdText) {
-        // @ts-expect-error
-        let md2html = (await import('jsda-kit/iso/md2html.js')).md2html;
-        let html = await md2html(mdText);
-        this.insertAdjacentHTML('afterbegin', html);
-        this.init();
-      }
-    });
+    // this.sub('src', async (newSrc) => {
+    //   if (!newSrc) return;
+    //   let resp = await fetch(newSrc);
+    //   let mdText = await resp.text();
+    //   if (mdText) {
+    //     // @ts-expect-error
+    //     let md2html = (await import('jsda-kit/iso/md2html.js')).md2html;
+    //     let html = await md2html(mdText);
+    //     this.insertAdjacentHTML('afterbegin', html);
+    //     this.init();
+    //   }
+    // });
     this.init();
 
     this.sub('currentChapter', (newChapter) => {
@@ -142,9 +142,9 @@ export class TuiArticle extends Symbiote {
 }
 
 TuiArticle.template = template;
-TuiArticle.bindAttributes({
-  src: 'src',
-});
+// TuiArticle.bindAttributes({
+//   src: 'src',
+// });
 
 TuiArticle.reg('tui-article');
 

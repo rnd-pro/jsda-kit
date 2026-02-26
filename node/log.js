@@ -3,37 +3,45 @@ import chalk from 'chalk';
 
 export class Log {
 
+  static lastMsg = '';
+
+  /**
+   * 
+   * @param {String} msg 
+   * @returns 
+   */
+  static deDup(msg) {
+    if (!CFG.log || Log.lastMsg === msg) return;
+    Log.lastMsg = msg;
+    console.log(msg);
+  }
+
   /**
    * @param {[String, ...any]} args
    */
   static info(...args) {
-    if (CFG.log) {
-      console.log(chalk.white.bgBlue('> ' + args[0]), chalk.white(...args.slice(1)));
-    }
+    this.deDup(chalk.white.bgBlue('> ' + args[0]) + chalk.white(...args.slice(1)));
   }
 
   /**
    * @param {[String, ...any]} args
    */
   static err(...args) {
-    if (CFG.log) {
-      console.log(chalk.white.bgRed.bold('❌ ' + args[0]), ...args.slice(1));
-    }
+    this.deDup(chalk.white.bgRed.bold('❌ ' + args[0]) + chalk.white(...args.slice(1)));
   }
 
   /**
    * @param {[String, ...any]} args
    */
   static warn(...args) {
-    if (CFG.log) {
-      console.log(chalk.black.bgYellow('⚠️ ' + args[0]), ...args.slice(1));
-    }
+    this.deDup(chalk.black.bgYellow('⚠️ ' + args[0]) + chalk.white(...args.slice(1)));
   }
 
+  /**
+   * @param {[String, ...any]} args
+   */
   static success(...args) {
-    if (CFG.log) {
-      console.log(chalk.black.bgGreen('> ' + args[0]), ...args.slice(1));
-    }
+    this.deDup(chalk.black.bgGreen('> ' + args[0]) + chalk.white(...args.slice(1)));
   }
 
 }
