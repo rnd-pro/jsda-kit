@@ -1,6 +1,6 @@
 # JSDA Concept
 
-**JSDA** stands for **JavaScript Delivery Approach** — a modern methodology for building web applications where JavaScript modules serve as the primary asset generation format.
+**JSDA** stands for **JavaScript Distributed Assets** — a modern methodology for building web applications where JavaScript modules serve as the primary asset generation format.
 
 ## Core Philosophy
 
