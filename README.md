@@ -60,19 +60,18 @@ export default /*html*/ `
 `;
 ```
 
-## Example: SSR with Symbiote.js
+## Example: Isomorphic Component
 
 ```javascript
 import Symbiote, { html, css } from '@symbiotejs/symbiote';
 
 class AppGreeting extends Symbiote {
-  init$ = {
-    name: 'World',
-  };
+  isoMode = true;
+  greeting = 'Hello, World!';
 }
 
 AppGreeting.template = html`
-<div class="greeting">Hello, {{name}}!</div>
+<h2 ${{textContent: 'greeting'}}></h2>
 `;
 
 AppGreeting.rootStyles = css`
@@ -85,7 +84,7 @@ app-greeting {
 AppGreeting.reg('app-greeting');
 ```
 
-Components are automatically SSR'd via `SSR.processHtml()` in both the dev server and SSG build.
+Same code runs everywhere — SSR on the server, hydration on the client, or pure client rendering. Set `isoMode = true` and the component auto-detects. Server-only and client-only components are also possible — `isoMode` is opt-in per component.
 
 ## CLI
 
