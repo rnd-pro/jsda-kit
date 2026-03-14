@@ -3,14 +3,15 @@ import CFG from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
+import { minifyTemplates, writeFiles } from 'esbuild-minify-templates';
 import { Log } from '../node/Log.js';
 import { htmlMin } from './htmlMin.js';
 import { cssMin } from './cssMin.js';
+import { wcSsr } from './wcSsr.js';
 import { getExternalDeps } from '../server/getExternalDeps.js';
 
 /**
- * 
- * @param {String} path 
+ * @param {String} path
  */
 function fmtPath(path) {
   if (path && !path.startsWith('.')) {
@@ -20,14 +21,13 @@ function fmtPath(path) {
 }
 
 /**
- * 
- * @param {String} path 
+ * @param {String} path
  * @returns {Promise<String>}
  */
 async function impWa(path) {
   let result = null;
   if (path.includes('/index.js')) {
-    let buildResult = esbuild.buildSync({
+    let buildResult = await esbuild.build({
       entryPoints: [path],
       format: 'esm',
       bundle: true,
@@ -36,6 +36,7 @@ async function impWa(path) {
       external: getExternalDeps(),
       target: 'esnext',
       write: false,
+      plugins: [minifyTemplates({ taggedOnly: true }), writeFiles()],
     });
     result = buildResult.outputFiles[0].text;
   } else {
@@ -55,10 +56,9 @@ async function impWa(path) {
 }
 
 /**
- * 
- * @param {String} indexPath 
+ * @param {String} indexPath
  */
- async function processIndex(indexPath) {
+async function processIndex(indexPath) {
   let indexSrc = await impWa(indexPath);
   if (!indexSrc) {
     return;
@@ -70,8 +70,13 @@ async function impWa(path) {
   }
   outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
 
-  if (outPath.includes('/index.html') && CFG.minify.html) {
-    indexSrc = htmlMin(indexSrc).toString();
+  if (outPath.includes('/index.html')) {
+    if (CFG.ssr) {
+      indexSrc = await wcSsr(indexSrc);
+    }
+    if (CFG.minify.html) {
+      indexSrc = htmlMin(indexSrc).toString();
+    }
   }
 
   if (outPath.includes('/index.css')) {

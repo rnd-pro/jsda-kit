@@ -8,6 +8,7 @@ import { cssMin } from '../node/cssMin.js';
 import pth from '../node/pth.js';
 import { Log } from '../node/Log.js';
 import { applyData } from '../iso/applyData.js';
+import { wcSsr } from '../node/wcSsr.js';
 
 /** @type {Object<string, {type: string, content: string, code: number}>} */
 const cache = Object.create(null);
@@ -93,7 +94,7 @@ export function createServer(options = {}) {
     if (fileName === 'index.js') {
       // Handle JS bundles:
       try {
-        respond('text/javascript', jsBuild(filePath));
+        respond('text/javascript', await jsBuild(filePath));
       } catch (err) {
         Log.err('JS build error:', err);
         respond('text/plain', 'JS ASSET BUILD ERROR', 500);
@@ -158,7 +159,9 @@ export function createServer(options = {}) {
         route = (await CFG.dynamic.getRouteFn(req.url, req.headers)) || route;
         let html = (await import(pth(routes[route]) + params)).default;
         let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
-        respond('text/html', htmlMin(applyData(html, data)));
+        html = applyData(html, data);
+        html = await wcSsr(html);
+        respond('text/html', htmlMin(html));
       } catch (err) {
         Log.err('Route error:', err);
         respond('text/plain', 'JSDA ROUTE ERROR', 500);

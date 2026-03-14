@@ -16,6 +16,7 @@
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "maxNodeModuleJsDepth": 2,
     "types": ["node"],
     "noEmit": true
   },

@@ -1,15 +1,15 @@
 declare type JSDA_CFG = {
   
   dynamic: {
-    port: number; // 3000 is default
-    routes: string; // *.js file with the mapping object default export 
+    port: number;
+    routes: string;
     cache: {
       inMemory: boolean;
       exclude: string[];
     };
     baseDir: string;
-    getRouteFn: (url: string, headers: http.IncomingHttpHeaders) => Promise<string>;
-    getDataFn: (route: string, url: string, headers: http.IncomingHttpHeaders) => Promise<{ [key: string]: string }>;
+    getRouteFn: (url: string, headers: import('http').IncomingHttpHeaders) => Promise<string>;
+    getDataFn: (route: string, url: string, headers: import('http').IncomingHttpHeaders) => Promise<{ [key: string]: string }>;
   };
 
   static: {
@@ -33,9 +33,12 @@ declare type JSDA_CFG = {
 
   log: boolean;
 
+  /** Enable SSR pass during SSG build */
+  ssr: boolean;
+
   importmap: {
     packageList: string[];
-    srcSchema: string; // Example: https://cdn.jsdelivr.net/npm/{pkg-name}/+esm
+    srcSchema: string;
     polyfills: boolean;
     preload: boolean;
   };
@@ -43,8 +46,8 @@ declare type JSDA_CFG = {
 };
 
 declare type cli_commands = {
-  ssg,
-  serve,
-  init,
-  build,
+  ssg: void;
+  serve: void;
+  init: void;
+  build: void;
 };

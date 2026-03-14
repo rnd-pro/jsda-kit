@@ -6,7 +6,7 @@
  * @param {String} [closeToken]
  * @returns 
  */
-export function applyData(html, data, openToken = '{{', closeToken = '}}') {
+export function applyData(html, data, openToken = '{[', closeToken = ']}') {
   for (let key in data) {
     html = html.replaceAll(openToken + key + closeToken, data[key]);
   }

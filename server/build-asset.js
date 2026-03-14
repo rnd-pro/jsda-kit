@@ -1,9 +1,14 @@
 import CFG from '../cfg/CFG.js';
 import esbuild from 'esbuild';
+import { minifyTemplates, writeFiles } from 'esbuild-minify-templates';
 import { getExternalDeps } from './getExternalDeps.js';
 
-export function jsBuild(entry) {
-  return esbuild.buildSync({
+/**
+ * @param {String} entry
+ * @returns {Promise<String>}
+ */
+export async function jsBuild(entry) {
+  let result = await esbuild.build({
     entryPoints: [entry],
     bundle: !CFG.bundle.exclude.includes(entry) && CFG.bundle.js,
     format: 'esm',
@@ -13,9 +18,15 @@ export function jsBuild(entry) {
     external: getExternalDeps(),
     treeShaking: true,
     write: false,
-  }).outputFiles[0].text;
+    plugins: [minifyTemplates({ taggedOnly: true }), writeFiles()],
+  });
+  return result.outputFiles[0].text;
 }
 
+/**
+ * @param {String} entry
+ * @returns {String}
+ */
 export function cssBuild(entry) {
   return esbuild.buildSync({
     entryPoints: [entry],

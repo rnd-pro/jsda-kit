@@ -24,9 +24,19 @@
   "license": "MIT",
   "author": "team@rnd-pro.com",
   "type": "module",
-  "main": "index.js",
+  "main": "iso/index.js",
+  "exports": {
+    ".": "./iso/index.js",
+    "./server": "./server/index.js",
+    "./node": "./node/index.js",
+    "./browser": "./browser/index.js",
+    "./cfg": "./cfg/CFG.js"
+  },
   "bin": {
     "jsda": "./cli/index.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
     "jsda-ssg": "node ./node/watch.js",
@@ -41,7 +51,9 @@
     "@minify-html/node": "^0.16.4",
     "@symbiotejs/symbiote": "^3.5.3",
     "esbuild": "^0.25.9",
+    "esbuild-minify-templates": "^0.11.0",
     "highlight.js": "^11.11.1",
+    "linkedom": ">=0.16.0",
     "marked": "^16.2.1",
     "marked-highlight": "^2.2.2"
   },

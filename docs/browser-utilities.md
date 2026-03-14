@@ -11,11 +11,11 @@ Replace template tokens in a string.
 ```js
 import { applyData } from 'jsda-kit';
 
-applyData('Hello, {{name}}!', { name: 'World' });
+applyData('Hello, {[name]}!', { name: 'World' });
 // → 'Hello, World!'
 
 // Custom delimiters:
-applyData('Hello, {[name]}!', { name: 'World' }, '{[', ']}');
+applyData('Hello, {{name}}!', { name: 'World' }, '{{', '}}');
 ```
 
 ### `getHash(str)`

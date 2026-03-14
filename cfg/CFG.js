@@ -59,6 +59,8 @@ const defaults = {
 
   log: true,
 
+  ssr: false,
+
   importmap: {
     packageList: [],
     srcSchema: 'https://cdn.jsdelivr.net/npm/{pkg-name}/+esm',

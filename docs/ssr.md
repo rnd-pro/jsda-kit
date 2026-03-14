@@ -6,7 +6,7 @@ JSDA-Kit v1.0 uses [Symbiote.js SSR](https://github.com/symbiotejs/symbiote.js) 
 
 The SSR pipeline:
 
-1. **Data injection** — template tokens (`{{key}}`) are replaced with data values
+1. **Data injection** — template tokens (`{[key]}`) are replaced with data values
 2. **Component rendering** — `SSR.processHtml()` processes all custom elements in the HTML
 3. **Minification** — HTML is minified before serving
 
@@ -47,8 +47,8 @@ let result = await wcSsr('<app-hello></app-hello>', {
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `data` | `Object` | `{}` | Data tokens to inject before SSR |
-| `openToken` | `string` | `'{{'` | Token open delimiter |
-| `closeToken` | `string` | `'}}'` | Token close delimiter |
+| `openToken` | `string` | `'{['` | Token open delimiter |
+| `closeToken` | `string` | `']}'` | Token close delimiter |
 | `ssrOptions` | `Object` | `{}` | Options passed to `SSR.processHtml()` |
 
 ### Direct SSR Access

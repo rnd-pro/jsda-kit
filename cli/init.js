@@ -7,8 +7,6 @@ const gitignore = `
 ## editors
 /.idea
 /.vscode
-/.agicoder
-/.qoder
 
 ## system files
 .DS_Store
@@ -24,10 +22,6 @@ build
 dist
 env
 
-## Cloud Images Toolkit
-cit/cit-store/
-cit/CIT_API_KEY
-
 ## Runtime
 secrets/
 .env
@@ -37,11 +31,57 @@ const folders = [
   './types',
   './src/static',
   './src/dynamic',
-  './src/templates/wc-ssr',
+  './src/components',
   './src/css',
   './src/md',
-  './cit/',
 ];
+
+const sampleComponent = `import Symbiote, { html, css } from '@symbiotejs/symbiote';
+
+class AppHello extends Symbiote {
+  init$ = {
+    name: 'World',
+  };
+}
+
+AppHello.template = html\`
+<div class="greeting">Hello, {{name}}!</div>
+\`;
+
+AppHello.rootStyles = css\`
+app-hello {
+  display: block;
+  padding: 1em;
+  font-family: system-ui, sans-serif;
+}
+
+app-hello .greeting {
+  font-size: 1.5rem;
+  color: var(--primary, #007acc);
+}
+\`;
+
+AppHello.reg('app-hello');
+
+export default AppHello;
+`;
+
+const sampleRoute = `export default /*html*/ \`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{[title]}</title>
+  <script type="module" src="/src/components/app-hello.js"></script>
+</head>
+<body>
+  <h1>{[title]}</h1>
+  <app-hello></app-hello>
+</body>
+</html>
+\`;
+`;
 
 function createFile(filePath, content) {
   if (filePath.replace('./', '').split('/').length > 1) {
@@ -67,5 +107,7 @@ export function init() {
   createFile('./tsconfig.json', fs.readFileSync('./node_modules/jsda-kit/tsconfig.json', 'utf8'));
   createFile('./.npmrc', 'package-lock=false');
   createFile('./.gitignore', gitignore);
+  createFile('./src/components/app-hello.js', sampleComponent);
+  createFile('./src/dynamic/index.html.js', sampleRoute);
 
 }
