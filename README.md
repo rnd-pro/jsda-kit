@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/jsda-kit.svg)](https://badge.fury.io/js/jsda-kit)
+[![npm version](https://img.shields.io/npm/v/jsda-kit)](https://www.npmjs.com/package/jsda-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![ESM](https://img.shields.io/badge/ESM-only-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
