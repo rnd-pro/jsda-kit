@@ -17,7 +17,6 @@ TMP
 build
 dist
 env
-test
 
 ## Cloud Images Toolkit
 cit/cit-store/

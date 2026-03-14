@@ -31,11 +31,15 @@
   "scripts": {
     "jsda-ssg": "node ./node/watch.js",
     "jsda-serve": "node ./server/index.js",
-    "test": "test"
+    "test": "node --test test/node/**/*.test.js test/iso/**/*.test.js test/server/**/*.test.js",
+    "test:unit": "node --test test/node/**/*.test.js test/iso/**/*.test.js",
+    "test:server": "node --test test/server/**/*.test.js",
+    "test:browser": "npx playwright test",
+    "test:all": "npm test && npm run test:browser"
   },
   "dependencies": {
     "@minify-html/node": "^0.16.4",
-    "@symbiotejs/symbiote": "^3.0.4",
+    "@symbiotejs/symbiote": "^3.5.3",
     "chalk": "^5.6.2",
     "esbuild": "^0.25.9",
     "highlight.js": "^11.11.1",
@@ -43,6 +47,7 @@
     "marked-highlight": "^2.2.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@types/node": "^24.3.1"
   },
   "types": "./types/jsda.d.ts"

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script type="importmap">
+  {
+    "imports": {
+      "@symbiotejs/symbiote": "https://cdn.jsdelivr.net/npm/@symbiotejs/symbiote@3.0.4/+esm",
+      "jsda-kit/iso/md2html.js": "https://cdn.jsdelivr.net/npm/jsda-kit/iso/md2html.js/+esm"
+    }
+  }
+  </script>
+  <script src="../../browser/wc/jsda-style/jsda-style.js" type="module"></script>
+  <script src="../../browser/wc/tui-article/tui-article.js" type="module"></script>
+</head>
+
+<body>
+  <jsda-style src="../../css-lib/tui-page.css.js"></jsda-style>
+  <div slot="nav">
+    <a href="../index.html">Home</a>
+    <a href="./blog/">Community</a>
+    <a href="./blog/">Contacts</a>
+  </div>
+  <tui-article id="md" src="../../README.md"></tui-article>
+</body>
+
+</html>
