@@ -14,4 +14,18 @@ describe('pth', () => {
     let result = pth('/absolute/path/file.js');
     assert.ok(path.isAbsolute(result));
   });
+
+  it('should return file:// URL when isFileUrl is true', () => {
+    let result = pth('./src/index.js', true);
+    assert.ok(result.startsWith('file://'));
+    assert.ok(result.includes('src/index.js'));
+    // Should NOT have double cwd:
+    let afterProtocol = result.replace('file://', '');
+    assert.ok(path.isAbsolute(afterProtocol));
+  });
+
+  it('should pass through remote URLs when isFileUrl is true', () => {
+    let result = pth('https://example.com/module.js', true);
+    assert.equal(result, 'https://example.com/module.js');
+  });
 });

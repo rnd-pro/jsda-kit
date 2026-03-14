@@ -1,5 +1,28 @@
 import pth from '../node/pth.js';
-import chalk from 'chalk';
+
+/**
+ * @param {Object} target
+ * @param {Object} source
+ * @returns {Object}
+ */
+function deepMerge(target, source) {
+  let result = { ...target };
+  for (let key in source) {
+    if (
+      source[key] !== null
+      && typeof source[key] === 'object'
+      && !Array.isArray(source[key])
+      && typeof result[key] === 'object'
+      && result[key] !== null
+      && !Array.isArray(result[key])
+    ) {
+      result[key] = deepMerge(result[key], source[key]);
+    } else {
+      result[key] = source[key];
+    }
+  }
+  return result;
+}
 
 /** @type {JSDA_CFG} */
 const defaults = {
@@ -51,11 +74,10 @@ let cfg = {...defaults};
 try {
   /** @type {JSDA_CFG} */
   let cfgObj = (await import(pth('project.cfg.js'))).default;
-  Object.assign(cfg, cfgObj);
-} catch(err) {
-  console.log(chalk.red('DWA Server:'), 'Error loading config');
-  console.error(err);
+  cfg = deepMerge(defaults, cfgObj);
+} catch {
+  // project.cfg.js not found — using defaults (zero-config mode)
 }
 
-export { cfg, defaults };
+export { cfg, defaults, deepMerge };
 export default cfg;

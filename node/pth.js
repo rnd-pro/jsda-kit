@@ -1,16 +1,15 @@
 import path from 'path';
 
 /**
- * 
- * @param {String} p 
- * @param {Boolean} [isDwa]
- * @returns 
+ * @param {String} p
+ * @param {Boolean} [isFileUrl]
+ * @returns {String}
  */
-export default function pth(p, isDwa) {
-  if (isDwa) {
+export default function pth(p, isFileUrl) {
+  let resolved = path.resolve(process.cwd(), p);
+  if (isFileUrl) {
     let local = !p.includes('//');
-    return local ? 'file://' + process.cwd() + path.resolve(process.cwd(), p) : p;
-  } else {
-    return path.resolve(process.cwd(), p);
+    return local ? 'file://' + resolved : p;
   }
+  return resolved;
 }
