@@ -1,6 +1,6 @@
 {
   "name": "jsda-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "access": "public",
   "description": "JSDA Toolkit for modern Web",
   "keywords": [
@@ -30,7 +30,8 @@
     "./server": "./server/index.js",
     "./node": "./node/index.js",
     "./browser": "./browser/index.js",
-    "./cfg": "./cfg/CFG.js"
+    "./cfg": "./cfg/CFG.js",
+    "./*": "./*"
   },
   "bin": {
     "jsda": "./cli/index.js"
