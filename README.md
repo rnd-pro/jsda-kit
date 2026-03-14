@@ -1,214 +1,124 @@
-# JSDA-Kit
-
 [![npm version](https://badge.fury.io/js/jsda-kit.svg)](https://badge.fury.io/js/jsda-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![ESM](https://img.shields.io/badge/ESM-only-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+[![SSR](https://img.shields.io/badge/SSR-Symbiote.js-blueviolet)](https://github.com/symbiotejs/symbiote.js)
 
-A comprehensive, isomorphic JavaScript toolkit for building modern web applications with support for Static Site Generation (SSG), Server-Side Rendering (SSR), and dynamic real-time servers. JSDA-Kit transforms standard JavaScript ESM modules into powerful web asset generation endpoints.
+# JSDA-Kit
+
+<img src="https://rnd-pro.com/svg/jsda/index.svg" width="200" alt="JSDA">
+
+A comprehensive toolkit for building modern web applications with Static Site Generation (SSG), Server-Side Rendering (SSR), and dynamic servers. JSDA-Kit transforms standard JavaScript ESM modules into web assets.
 
 ## What is JSDA?
 
-**JSDA** (JavaScript Distributed Web Assets) revolutionizes web development by treating JavaScript ESM modules as text-based web asset generation endpoints. This approach provides PHP-like templating capabilities while leveraging modern JavaScript's universal nature and ESM module system.
+**JSDA** (JavaScript Distributed Web Assets) treats JavaScript ESM modules as text-based web asset generation endpoints — providing PHP-like templating with modern JavaScript and ESM modules.
 
 > **Learn more**: https://github.com/rnd-pro/jsda
 
 ## Key Features
 
-- **Isomorphic Architecture**: Universal JavaScript execution in both browser and Node.js environments
-- **Real-Time Asset Bundling**: Instant JS/CSS bundling with esbuild - no Webpack required
-- **Server-Side Rendering**: Native SSR support for Custom Elements and Web Components
-- **Zero Configuration**: Works out of the box with sensible defaults
-- **Automatic ImportMaps**: Dynamic import map generation based on project structure
-- **Hybrid App Support**: Seamlessly combine SSR, SPA, micro-frontends, and dynamic components
-- **Distributed Assets**: ESM-over-HTTPS delivery for modular components
-- **Dynamic Styling**: JavaScript-powered CSS with Shadow DOM support
-- **Performance Optimized**: Fast in-memory caching for production
-- **Extensible**: Clean APIs for custom middleware and extensions
-- **TypeScript Ready**: Full TypeScript support with comprehensive type definitions
-- **CLI**: Powerful command-line interface with hot reload and build tools
+- **Isomorphic Architecture** — universal JS execution in browser and Node.js
+- **Symbiote.js SSR** — standard SSR with `SSR.processHtml()`, streaming, and Declarative Shadow DOM
+- **Real-Time Bundling** — instant JS/CSS bundling with esbuild
+- **Tagged Template Minification** — `html` and `css` template literals minified automatically
+- **Zero Configuration** — works out of the box with deep-mergeable defaults
+- **Automatic Import Maps** — CDN-based dependency resolution
+- **CLI** — `serve`, `build`, `ssg`, `init` with `--help`, `--version`, `--port`, `--output`
+- **TypeScript Ready** — JSDoc-first types with `maxNodeModuleJsDepth` resolution
+- **No frameworks** — no Webpack, no Babel, just ESM and the platform
 
 ## Quick Start
 
-### Installation
-
 ```bash
 npm install jsda-kit
+
+# Scaffold a new project
+npx jsda init
+
+# Start dev server
+npx jsda serve
+
+# Build for production
+npx jsda build
 ```
 
-### CLI Usage (Recommended)
-
-```bash
-# Start development server
-jsda serve
-
-# Build static site
-jsda build
-
-# Start SSG (Static Site Generation) with file watching
-jsda ssg
-
-# Create project structure
-jsda init
-```
-
-### Programmatic Usage
+## Example: ESM as Assets
 
 ```javascript
-// Start a JSDA server
-import { JSDAServer } from 'jsda-kit/server';
-
-const server = new JSDAServer({
-  port: 3000,
-  cache: true,
-  routes: './routes.js'
-});
-
-server.start();
-```
-
-## Core Components
-
-### Server Engine
-- **JSDAServer**: Main HTTP server with request routing and asset transformation
-- **SSR Engine**: Recursive server-side rendering for Web Components
-- **Configuration System**: Flexible, hierarchical configuration management
-- **Path Resolution**: Smart module path resolution for local and remote assets
-
-### Isomorphic Tools
-- **Asset Processing**: HTML/CSS/JS minification and optimization
-- **MIME Handling**: Automatic content-type detection and serving
-- **Data Processing**: Template data injection and transformation
-- **Markdown Support**: Integrated Markdown to HTML conversion
-
-### Build System
-- **Static Generation**: Export static sites from dynamic JSDA applications
-- **File Watching**: Development mode with hot reload capabilities
-- **Import Maps**: Automatic generation of browser-compatible module maps
-- **Asset Bundling**: Real-time bundling with esbuild integration
-- **Project Structure Analysis**: Automated project tree generation
-
-### TypeScript Support
-- **Type Definitions**: Complete TypeScript definitions for JSDA configuration
-- **IDE Integration**: Enhanced development experience with IntelliSense
-
-## Use Cases
-
-- **JAMStack Sites**: Static site generation with dynamic capabilities
-- **Micro-Frontends**: Modular, distributed web application architecture
-- **Rapid Prototyping**: Quick setup for testing ideas and concepts
-- **AI-Augmented Development**: Integration-ready for AI-powered workflows
-- **Component Libraries**: Distributable web component ecosystems
-- **Hybrid Applications**: Mixed SSR/SPA applications with seamless transitions
-
-## Example Usage
-
-### Creating a Simple HTML Page
-
-```javascript
-// pages/home.html.js
+// src/static/index.html.js → dist/index.html
 export default /*html*/ `
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Welcome to JSDA</title>
-</head>
+<head><title>My Page</title></head>
 <body>
-  <h1>Hello, JSDA World!</h1>
-  <p>Current time: ${new Date().toISOString()}</p>
+  <h1>Hello, JSDA!</h1>
+  <app-greeting></app-greeting>
+  <script type="module" src="/app/index.js"></script>
 </body>
 </html>
 `;
 ```
 
-### Building Dynamic CSS
+## Example: SSR with Symbiote.js
 
 ```javascript
-// styles/theme.css.js
-const primaryColor = '#007acc';
-const secondaryColor = '#f0f0f0';
+import Symbiote, { html, css } from '@symbiotejs/symbiote';
 
-export default /*css*/ `
-:root {
-  --primary: ${primaryColor};
-  --secondary: ${secondaryColor};
-}
-
-body {
-  background: var(--secondary);
-  color: var(--primary);
-  font-family: system-ui, sans-serif;
-}
-`;
-```
-
-### Web Component with SSR
-
-```javascript
-// components/my-component/index.js
-import { Symbiote } from '@symbiotejs/symbiote';
-
-class MyComponent extends Symbiote {
-
-  ssrMode = true;
-
+class AppGreeting extends Symbiote {
   init$ = {
-    message: 'Hello from Web Component!',
-    timestamp: Date.now(),
+    name: 'World',
   };
 }
 
-MyComponent.reg('my-component');
+AppGreeting.template = html`
+<div class="greeting">Hello, {{name}}!</div>
+`;
+
+AppGreeting.rootStyles = css`
+app-greeting {
+  display: block;
+  padding: 1em;
+}
+`;
+
+AppGreeting.reg('app-greeting');
 ```
 
-```js
-// SSR component template:
-import myData from `../myData.js`;
+Components are automatically SSR'd via `SSR.processHtml()` in both the dev server and SSG build.
 
-export default /*html*/ `
-<div>
-  <p>${myData.message}</p>
-  <my-another-component></my-another-component>
-</div>
-`;
+## CLI
+
 ```
+jsda <command> [options]
 
-```js
-// Component usage:
-export  default /*html*/ `
-<!-- Some HTML -->
-  <my-component></my-component>
-<!-- Some HTML -->
-`;
+Commands:
+  serve            Start the development server
+  build            Build static assets for production
+  ssg              Start SSG watcher (dev mode)
+  init             Scaffold a new JSDA project
+
+Options:
+  --help           Show help message
+  --version        Show version number
+  --port=<number>  Port for dev server (default: 3000)
+  --output=<dir>   Output directory for build (default: ./dist)
 ```
 
 ## Documentation
 
-For detailed documentation, examples, and advanced usage patterns, visit:
-- [Server Documentation](./server/README.md)
-- [API Reference](https://github.com/rnd-pro/jsda-kit/wiki)
-- [Examples](./ref-test/)
+Detailed docs in the [`docs/`](./docs/) folder:
 
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md).
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/rnd-pro/jsda-kit.git
-cd jsda-kit
-
-# Install dependencies
-npm install
-
-# Run example with CLI
-jsda serve
-
-# Or run specific commands
-jsda ssg     # Static Site Generation with watching
-jsda build   # Build static files
-jsda init # Create project structure
-```
+- [Getting Started](./docs/getting-started.md)
+- [JSDA Concept](./docs/jsda-concept.md)
+- [Configuration](./docs/configuration.md)
+- [SSR](./docs/ssr.md)
+- [SSG](./docs/ssg.md)
+- [Server](./docs/server.md)
+- [Import Maps](./docs/import-maps.md)
+- [CLI](./docs/cli.md)
+- [Browser Utilities](./docs/browser-utilities.md)
+- [API Reference](./docs/api-reference.md)
 
 ## License
 
@@ -216,10 +126,9 @@ MIT © [RND-PRO.com](https://rnd-pro.com)
 
 ## Related Projects
 
-- [JSDA Manifest](https://github.com/rnd-pro/jsda) - JSDA concept and basic conventions description
-- [Symbiote.js](https://github.com/symbiotejs/symbiote) - Reactive Web Components framework
+- [JSDA Manifest](https://github.com/rnd-pro/jsda) — JSDA concept and conventions
+- [Symbiote.js](https://github.com/symbiotejs/symbiote.js) — Isomorphic Reactive Web Components framework
 
 ---
 
 **Made with ❤️ by the RND-PRO team**
-

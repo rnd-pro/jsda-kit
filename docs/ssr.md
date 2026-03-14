@@ -1,14 +1,6 @@
 # Server-Side Rendering (SSR)
 
-JSDA-Kit v1.0 uses [Symbiote.js SSR](https://github.com/nicotordev/symbiote.js) for rendering web components on the server.
-
-## Requirements
-
-```bash
-npm install linkedom
-```
-
-`linkedom` is an optional peer dependency — required only when using SSR features.
+JSDA-Kit v1.0 uses [Symbiote.js SSR](https://github.com/symbiotejs/symbiote.js) for rendering web components on the server.
 
 ## How It Works
 
