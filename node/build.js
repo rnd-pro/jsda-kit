@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CFG from '../cfg/CFG.js';
+import CFG, { getSsrEnabled, getSsrImports } from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
@@ -22,7 +22,7 @@ function fmtPath(path) {
 
 /**
  * @param {String} path
- * @returns {Promise<String>}
+ * @returns {Promise<String | { content: String, ssrImports: String[] } | null>}
  */
 async function impWa(path) {
   let result = null;
@@ -43,11 +43,12 @@ async function impWa(path) {
     let processRoot = process.cwd();
     let mdlUrl = 'file://' + processRoot + '/' + path;
     try {
-      let str = (await import(mdlUrl)).default;
+      let mdl = await import(mdlUrl);
+      let str = mdl.default;
       if (str?.constructor === Function) {
         str = str();
       }
-      result = str;
+      result = { content: str, ssrImports: mdl.ssrImports || [] };
     } catch (e) {
       Log.err(e);
     }
@@ -59,11 +60,23 @@ async function impWa(path) {
  * @param {String} indexPath
  */
 async function processIndex(indexPath) {
-  let indexSrc = await impWa(indexPath);
-  if (!indexSrc) {
+  let imported = await impWa(indexPath);
+  if (!imported) {
     return;
   }
- 
+
+  /** @type {String} */
+  let indexSrc;
+  /** @type {String[]} */
+  let endpointSsrImports = [];
+
+  if (typeof imported === 'object' && imported.content !== undefined) {
+    indexSrc = imported.content;
+    endpointSsrImports = imported.ssrImports || [];
+  } else {
+    indexSrc = imported;
+  }
+
   let outPath = fmtPath(indexPath);
   if (!outPath.includes('index.js')) {
     outPath = outPath.replace('.js', '');
@@ -71,8 +84,9 @@ async function processIndex(indexPath) {
   outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
 
   if (outPath.includes('/index.html')) {
-    if (CFG.ssr) {
-      indexSrc = await wcSsr(indexSrc);
+    if (getSsrEnabled(CFG)) {
+      let imports = [...getSsrImports(CFG), ...endpointSsrImports];
+      indexSrc = await wcSsr(indexSrc, { imports });
     }
     if (CFG.minify.html) {
       indexSrc = htmlMin(indexSrc).toString();

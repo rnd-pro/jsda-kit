@@ -1,6 +1,6 @@
 import http from 'http';
 import fs from 'fs';
-import CFG from '../cfg/CFG.js';
+import CFG, { getSsrEnabled, getSsrImports } from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
 import { jsBuild, cssBuild } from './build-asset.js';
 import { htmlMin } from '../node/htmlMin.js';
@@ -157,10 +157,13 @@ export function createServer(options = {}) {
     if (routes[route]) {
       try {
         route = (await CFG.dynamic.getRouteFn(req.url, req.headers)) || route;
-        let html = (await import(pth(routes[route]) + params)).default;
+        let routeMdl = await import(pth(routes[route]) + params);
+        let html = routeMdl.default;
+        let routeSsrImports = routeMdl.ssrImports || [];
         let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
         html = applyData(html, data);
-        html = await wcSsr(html);
+        let imports = [...getSsrImports(CFG), ...routeSsrImports];
+        html = await wcSsr(html, { imports });
         respond('text/html', htmlMin(html));
       } catch (err) {
         Log.err('Route error:', err);

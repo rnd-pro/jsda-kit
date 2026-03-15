@@ -33,8 +33,11 @@ declare type JSDA_CFG = {
 
   log: boolean;
 
-  /** Enable SSR pass during SSG build */
-  ssr: boolean;
+  /** SSR configuration — `true` enables with defaults, or pass object for full control */
+  ssr: boolean | {
+    enabled?: boolean;
+    imports?: string[];
+  };
 
   importmap: {
     packageList: string[];

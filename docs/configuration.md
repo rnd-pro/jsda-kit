@@ -21,7 +21,10 @@ export default {
     sourceDir: './src/static',
   },
 
-  ssr: true,
+  ssr: {
+    enabled: true,
+    imports: ['./src/components/index.js'],
+  },
 
   minify: {
     js: true,
@@ -73,9 +76,13 @@ export default {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `ssr` | `boolean` | `false` | Enable Symbiote.js SSR during SSG build |
+| `ssr` | `boolean \| object` | `{ enabled: false }` | SSR configuration — `true` enables with defaults |
+| `ssr.enabled` | `boolean` | `false` | Enable Symbiote.js SSR |
+| `ssr.imports` | `string[]` | `[]` | Component module paths to import for SSR |
 
-When enabled, HTML output from SSG is processed through `SSR.processHtml()` before minification.
+When enabled, HTML output is processed through `SSR.processHtml()` after importing the specified component modules. Supports both `ssr: true` (boolean shorthand) and the full object form.
+
+Individual JSDA endpoints can also export `ssrImports` for page-specific components — see [SSR docs](./ssr.md).
 
 ### `minify`
 

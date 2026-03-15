@@ -1,34 +1,115 @@
 # Server-Side Rendering (SSR)
 
-JSDA-Kit v1.0 uses [Symbiote.js SSR](https://github.com/symbiotejs/symbiote.js) for rendering web components on the server.
+JSDA-Kit uses [Symbiote.js SSR](https://github.com/symbiotejs/symbiote.js) for rendering web components on the server.
 
 ## How It Works
 
 The SSR pipeline:
 
 1. **Data injection** — template tokens (`{[key]}`) are replaced with data values
-2. **Component rendering** — `SSR.processHtml()` processes all custom elements in the HTML
-3. **Minification** — HTML is minified before serving
+2. **Component import** — SSR component modules are loaded into the Node runtime
+3. **Component rendering** — `SSR.processHtml()` processes all custom elements in the HTML
+4. **Minification** — HTML is minified before serving
 
 Custom elements must be registered Symbiote.js components with `customElements.define()` (via `.reg()`).
+
+## SSR Component Imports
+
+For SSR to render custom elements, their component modules must be imported into the Node runtime. JSDA-Kit provides three levels of SSR imports:
+
+### Global Imports
+
+Specify components in `project.cfg.js` that apply to all pages:
+
+```js
+export default {
+  ssr: {
+    enabled: true,
+    imports: [
+      './src/components/app-header.js',
+      './src/components/app-footer.js',
+    ],
+  },
+};
+```
+
+### Per-Endpoint Imports
+
+Each JSDA `.html.js` file can export `ssrImports` for page-specific components:
+
+```js
+// src/static/pages/about/index.html.js
+export const ssrImports = [
+  './src/components/about-card.js',
+  './src/components/team-list.js',
+];
+
+export default /*html*/ `
+<!DOCTYPE html>
+<html>
+<body>
+  <app-header></app-header>
+  <about-card></about-card>
+  <team-list></team-list>
+</body>
+</html>
+`;
+```
+
+Global and per-endpoint imports are merged automatically. Per-endpoint imports are useful for optimization in larger projects — only the components needed for each page are loaded.
+
+> **Note:** Per-endpoint imports work with `.html.js` JSDA files. For `index.js` (esbuild-bundled) endpoints, use global imports instead.
+
+### Programmatic Imports
+
+Pass imports directly via the `wcSsr()` API:
+
+```js
+import { wcSsr } from 'jsda-kit/node';
+
+let result = await wcSsr('<app-card></app-card>', {
+  imports: ['./src/components/app-card.js'],
+});
+```
 
 ## Usage in Server Routes
 
 SSR is automatically applied to all routes served by `JSDAServer`. The pipeline is:
 
 ```
-Route HTML → applyData() → wcSsr() → htmlMin() → Response
+Route HTML → applyData() → wcSsr(imports) → htmlMin() → Response
+```
+
+Route modules can also export `ssrImports`:
+
+```js
+// src/dynamic/index.html.js
+export const ssrImports = ['./src/components/app-hero.js'];
+
+export default /*html*/ `
+<!DOCTYPE html>
+<html>
+<body>
+  <app-hero></app-hero>
+</body>
+</html>
+`;
 ```
 
 ## Usage in SSG Build
 
-Enable SSR during static site generation by setting `ssr: true` in `project.cfg.js`:
+Enable SSR during static site generation in `project.cfg.js`:
 
 ```js
 export default {
-  ssr: true,
+  ssr: {
+    enabled: true,
+    imports: ['./src/components/index.js'],
+  },
 };
 ```
+
+For backward compatibility, `ssr: true` also works (without component imports).
 
 ## Programmatic API
 
@@ -38,6 +119,7 @@ export default {
 import { wcSsr } from 'jsda-kit/node';
 
 let result = await wcSsr('<app-hello></app-hello>', {
+  imports: ['./src/components/app-hello.js'],
   data: { title: 'My Page' },
   ssrOptions: { nonce: 'abc123' },
 });
@@ -46,6 +128,7 @@ let result = await wcSsr('<app-hello></app-hello>', {
 **Options:**
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
+| `imports` | `string[]` | `[]` | Component module paths to import for SSR |
 | `data` | `Object` | `{}` | Data tokens to inject before SSR |
 | `openToken` | `string` | `'{['` | Token open delimiter |
 | `closeToken` | `string` | `']}'` | Token close delimiter |
@@ -58,14 +141,20 @@ For advanced usage, the Symbiote.js `SSR` class is re-exported:
 ```js
 import { SSR } from 'jsda-kit/node';
 
+// Manual lifecycle for full control:
+await SSR.init();
+await import('./my-component.js');
+
 // Render a single component
-let html = await SSR.renderToString('my-component', { attr: 'value' });
+let html = SSR.renderToString('my-component', { attr: 'value' });
 
 // Process full HTML document
 let processed = await SSR.processHtml(fullHtml);
 
 // Streaming SSR
 let stream = SSR.renderToStream('my-component');
+
+SSR.destroy();
 ```
 
 ## Component Example
@@ -74,6 +163,8 @@ let stream = SSR.renderToStream('my-component');
 import Symbiote, { html, css } from '@symbiotejs/symbiote';
 
 class AppCard extends Symbiote {
+  isoMode = true;
+
   init$ = {
     title: 'Default Title',
     body: '',

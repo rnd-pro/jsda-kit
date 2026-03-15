@@ -59,7 +59,10 @@ const defaults = {
 
   log: true,
 
-  ssr: false,
+  ssr: {
+    enabled: false,
+    imports: [],
+  },
 
   importmap: {
     packageList: [],
@@ -81,5 +84,23 @@ try {
   // project.cfg.js not found — using defaults (zero-config mode)
 }
 
-export { cfg, defaults, deepMerge };
+/**
+ * @param {JSDA_CFG} c
+ * @returns {boolean}
+ */
+function getSsrEnabled(c) {
+  if (typeof c.ssr === 'boolean') return c.ssr;
+  return !!c.ssr?.enabled;
+}
+
+/**
+ * @param {JSDA_CFG} c
+ * @returns {string[]}
+ */
+function getSsrImports(c) {
+  if (typeof c.ssr === 'object' && c.ssr?.imports) return c.ssr.imports;
+  return [];
+}
+
+export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports };
 export default cfg;
