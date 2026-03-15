@@ -5,8 +5,8 @@ export default html`
   <slot></slot>
 </article>
 <div part="nav">
-  <div part="nav-items" itemize="mdNav" ref="navItems">
-    <a ${{href: 'anchor', onclick: 'onClick', '@part': 'hType'}}>{{heading}}</a>
+  <div part="nav-items" itemize="mdNav" tag-name="article-nav-item" ref="navItems">
+    <a ${{href: 'anchor', onclick: 'onClick', '@part': 'hType', textContent: 'heading'}}></a>
   </div>
   <div part="nav-mark" ref="navMark" style="opacity: 0; top: 0;">|<br>&gt;<br>|</div>
 </div>
