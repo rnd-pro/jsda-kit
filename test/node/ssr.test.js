@@ -36,3 +36,42 @@ describe('wcSsr', () => {
     assert.equal(typeof result, 'string');
   });
 });
+
+describe('wcSsr concurrency', () => {
+  it('should serialize parallel SSR calls without errors', async () => {
+    let pages = Array.from({ length: 10 }, (_, i) =>
+      `<div><test-el-${i}>content</test-el-${i}></div>`
+    );
+    let results = await Promise.all(pages.map((p) => wcSsr(p)));
+    assert.equal(results.length, 10);
+    for (let r of results) {
+      assert.equal(typeof r, 'string', 'Each result should be a string');
+      assert.ok(r.length > 0, 'Each result should be non-empty');
+    }
+  });
+});
+
+describe('wcSsr DOCTYPE handling', () => {
+  it('should handle HTML with DOCTYPE prefix', async () => {
+    let html = '<!DOCTYPE html><html><body><div>Hello</div></body></html>';
+    let result = await wcSsr(html);
+    assert.equal(typeof result, 'string');
+    assert.ok(result.length > 0, 'Result should be non-empty');
+  });
+
+  it('should preserve DOCTYPE in output when present', async () => {
+    let html = '<!DOCTYPE html>\n<html><body><p>Plain</p></body></html>';
+    let result = await wcSsr(html);
+    assert.ok(result.includes('<!DOCTYPE html>') || result.includes('<!doctype html>'),
+      'DOCTYPE should be preserved in output');
+  });
+});
+
+describe('wcSsr error resilience', () => {
+  it('should return string even when SSR processing encounters issues', async () => {
+    let html = '<div><test-broken>test</test-broken></div>';
+    let result = await wcSsr(html);
+    assert.equal(typeof result, 'string', 'Should return string on error or success');
+    assert.ok(result.length > 0, 'Should return non-empty result');
+  });
+});

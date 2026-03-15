@@ -35,6 +35,9 @@ async function loadSsrImports(imports) {
  * @param {WcSsrOptions} [options]
  * @returns {Promise<String>} Rendered HTML string
  */
+/** @type {Promise<void>} */
+let _ssrLock = Promise.resolve();
+
 export async function wcSsr(html, options = {}) {
   let {
     data = {},
@@ -54,6 +57,13 @@ export async function wcSsr(html, options = {}) {
     return html;
   }
 
+  // Serialize SSR calls — SSR.init/processHtml/destroy use shared global state
+  /** @type {() => void} */
+  let unlock = () => {};
+  let prev = _ssrLock;
+  _ssrLock = new Promise((resolve) => { unlock = resolve; });
+  await prev;
+
   try {
     if (imports.length) {
       await SSR.init();
@@ -65,6 +75,8 @@ export async function wcSsr(html, options = {}) {
     }
   } catch (e) {
     Log.warn('[WC SSR] SSR processing failed:', e.message);
+  } finally {
+    unlock();
   }
 
   return html;
