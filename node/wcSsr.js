@@ -34,33 +34,31 @@ async function loadSsrImports(imports) {
       continue;
     }
 
-    let reExportPattern = /export\s+(?:\*|\{[^}]*\})\s+from\s+['"]([^'"]+)['"]/g;
+    let specifiers = new Set();
     let match;
-    let hasReExports = false;
 
-    while ((match = reExportPattern.exec(source)) !== null) {
-      hasReExports = true;
-      let specifier = match[1];
-      /** @type {string} */
-      let resolved;
-      if (specifier.startsWith('.')) {
-        resolved = new URL(specifier, fileUrl).href;
-      } else {
-        try {
-          resolved = import.meta.resolve(specifier);
-        } catch {
-          Log.warn('[WC SSR] Cannot resolve bare specifier:', specifier);
-          continue;
-        }
-      }
-      try {
-        await import(resolved + ts);
-      } catch (e) {
-        Log.warn('[WC SSR] Failed to import re-export:', specifier, e.message);
-      }
+    // 1) Any `from './...'` — handles export *, export {}, import X, multi-line imports
+    let fromPattern = /from\s+['"](\.[^'"]+)['"]/g;
+    while ((match = fromPattern.exec(source)) !== null) {
+      specifiers.add(match[1]);
     }
 
-    if (!hasReExports) {
+    // 2) Side-effect: `import './...'` (no `from` keyword)
+    let sideEffectPattern = /^\s*import\s+['"](\.[^'"]+)['"]/gm;
+    while ((match = sideEffectPattern.exec(source)) !== null) {
+      specifiers.add(match[1]);
+    }
+
+    if (specifiers.size) {
+      for (let specifier of specifiers) {
+        let resolved = new URL(specifier, fileUrl).href;
+        try {
+          await import(resolved + ts);
+        } catch (e) {
+          Log.warn('[WC SSR] Failed to import re-export:', specifier, e.message);
+        }
+      }
+    } else {
       try {
         await import(fileUrl + ts);
       } catch (e) {

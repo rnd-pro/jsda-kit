@@ -53,3 +53,108 @@ describe('SSR barrel file imports', () => {
     assert.ok(result.includes('Hello, World!'), 'direct component should render');
   });
 });
+
+describe('SSR named re-export barrel file', () => {
+  it('multi-session: named re-export barrel renders on SECOND call', async () => {
+    let html = '<div><barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-named-exports.js'],
+    });
+    console.log('[named barrel session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-named-exports.js'],
+    });
+    console.log('[named barrel session 2]:', result2);
+
+    assert.ok(result2.includes('Component Alpha'),
+      'barrel-comp-a should render in second session (named re-export)');
+    assert.ok(result2.includes('Component Beta'),
+      'barrel-comp-b should render in second session (named re-export)');
+  });
+});
+
+describe('SSR nested subdirectory barrel file', () => {
+  it('multi-session: nested barrel renders on SECOND call', async () => {
+    let html = '<div><nested-comp-a></nested-comp-a><nested-comp-b></nested-comp-b></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-nested-exports.js'],
+    });
+    console.log('[nested barrel session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-nested-exports.js'],
+    });
+    console.log('[nested barrel session 2]:', result2);
+
+    assert.ok(result2.includes('Nested-Alpha'),
+      'nested-comp-a should render in second session');
+    assert.ok(result2.includes('Nested-Beta'),
+      'nested-comp-b should render in second session');
+  });
+});
+
+describe('SSR import-then-export barrel file', () => {
+  it('multi-session: import/export barrel renders on SECOND call', async () => {
+    let html = '<div><barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-import-export.js'],
+    });
+    console.log('[import-export barrel session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-import-export.js'],
+    });
+    console.log('[import-export barrel session 2]:', result2);
+
+    assert.ok(result2.includes('Component Alpha'),
+      'barrel-comp-a should render in second session (import/export)');
+    assert.ok(result2.includes('Component Beta'),
+      'barrel-comp-b should render in second session (import/export)');
+  });
+});
+
+describe('SSR side-effect import barrel file', () => {
+  it('multi-session: side-effect barrel renders on SECOND call', async () => {
+    let html = '<div><barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-side-effect.js'],
+    });
+    console.log('[side-effect barrel session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-side-effect.js'],
+    });
+    console.log('[side-effect barrel session 2]:', result2);
+
+    assert.ok(result2.includes('Component Alpha'),
+      'barrel-comp-a should render in second session (side-effect)');
+    assert.ok(result2.includes('Component Beta'),
+      'barrel-comp-b should render in second session (side-effect)');
+  });
+});
+
+describe('SSR multi-line import barrel file', () => {
+  it('multi-session: multi-line barrel renders on SECOND call', async () => {
+    let html = '<div><barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-multiline.js'],
+    });
+    console.log('[multiline barrel session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/barrel-multiline.js'],
+    });
+    console.log('[multiline barrel session 2]:', result2);
+
+    assert.ok(result2.includes('Component Alpha'),
+      'barrel-comp-a should render in second session (multi-line)');
+    assert.ok(result2.includes('Component Beta'),
+      'barrel-comp-b should render in second session (multi-line)');
+  });
+});
