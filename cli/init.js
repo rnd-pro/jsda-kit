@@ -1,7 +1,11 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { checkDirExists } from '../node/checkDirExists.js';
 import { defaults } from '../cfg/CFG.js';
 import { Log } from '../node/Log.js';
+
+let __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const gitignore = `
 ## editors
@@ -32,6 +36,9 @@ const folders = [
   './src/static',
   './src/dynamic',
   './src/components',
+  './src/components/server-only',
+  './src/components/client-only',
+  './src/components/iso',
   './src/css',
   './src/md',
 ];
@@ -74,14 +81,25 @@ const sampleRoute = `export default /*html*/ \`
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{[title]}</title>
   <script type="module" src="/src/components/app-hello.js"></script>
+  <script type="module" src="/src/components/iso/iso-card.js"></script>
 </head>
 <body>
   <h1>{[title]}</h1>
   <app-hello></app-hello>
+  <iso-card></iso-card>
 </body>
 </html>
 \`;
 `;
+
+/**
+ * Read a scaffold file shipped with the package.
+ * @param  {...string} segments Path segments relative to cli/scaffolds/
+ * @returns {string}
+ */
+function readScaffold(...segments) {
+  return fs.readFileSync(path.join(__dirname, 'scaffolds', ...segments), 'utf8');
+}
 
 function createFile(filePath, content) {
   if (filePath.replace('./', '').split('/').length > 1) {
@@ -109,5 +127,15 @@ export function init() {
   createFile('./.gitignore', gitignore);
   createFile('./src/components/app-hello.js', sampleComponent);
   createFile('./src/dynamic/index.html.js', sampleRoute);
+
+  // Component sub-folder examples
+  createFile('./src/components/server-only/server-info.js', readScaffold('server-only', 'server-info.js'));
+  createFile('./src/components/server-only/exports.js', readScaffold('server-only', 'exports.js'));
+
+  createFile('./src/components/client-only/client-counter.js', readScaffold('client-only', 'client-counter.js'));
+  createFile('./src/components/client-only/exports.js', readScaffold('client-only', 'exports.js'));
+
+  createFile('./src/components/iso/iso-card.js', readScaffold('iso', 'iso-card.js'));
+  createFile('./src/components/iso/exports.js', readScaffold('iso', 'exports.js'));
 
 }
