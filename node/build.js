@@ -74,7 +74,7 @@ async function processIndex(indexPath) {
     indexSrc = imported.content;
     endpointSsrImports = imported.ssrImports || [];
   } else {
-    indexSrc = imported;
+    indexSrc = /** @type {string} */ (imported);
   }
 
   let outPath = fmtPath(indexPath);
