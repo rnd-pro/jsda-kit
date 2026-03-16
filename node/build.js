@@ -3,7 +3,7 @@ import CFG, { getSsrEnabled, getSsrImports, getSsrNonce } from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
-import { minifyTemplates, writeFiles } from 'esbuild-minify-templates';
+import { minifyTemplates } from 'esbuild-minify-templates';
 import { Log } from '../node/Log.js';
 import { htmlMin } from './htmlMin.js';
 import { cssMin } from './cssMin.js';
@@ -36,7 +36,7 @@ async function impWa(path) {
       external: getExternalDeps(),
       target: 'esnext',
       write: false,
-      plugins: [minifyTemplates({ taggedOnly: true }), writeFiles()],
+      plugins: [minifyTemplates({ taggedOnly: true })],
     });
     result = buildResult.outputFiles[0].text;
   } else {

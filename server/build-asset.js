@@ -1,6 +1,6 @@
 import CFG from '../cfg/CFG.js';
 import esbuild from 'esbuild';
-import { minifyTemplates, writeFiles } from 'esbuild-minify-templates';
+import { minifyTemplates } from 'esbuild-minify-templates';
 import { getExternalDeps } from './getExternalDeps.js';
 
 /**
@@ -18,7 +18,7 @@ export async function jsBuild(entry) {
     external: getExternalDeps(),
     treeShaking: true,
     write: false,
-    plugins: [minifyTemplates({ taggedOnly: true }), writeFiles()],
+    plugins: [minifyTemplates({ taggedOnly: true })],
   });
   return result.outputFiles[0].text;
 }
