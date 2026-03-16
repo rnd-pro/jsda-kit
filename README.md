@@ -74,9 +74,11 @@ If you've grown tired of fighting meta-platform opaque complexity, JSDA-Kit offe
 | **Vendor lock-in** | None — standard ESM, plain file output, deploy anywhere | Vercel-optimized — self-hosting has documented rough edges |
 | **Flexibility** | Full access to Node.js, custom route/data hooks, any hosting, any structure | Opinionated conventions — step outside them and you fight the framework |
 
+> [!IMPORTANT]
 > JSDA-Kit handles projects of any complexity — from a single landing page to a full-scale web application. The difference is: **you stay in control**.
 
-> **💡 Free hosting friendly** — the light CI pipeline fits comfortably within the free tiers of GitHub Pages or Cloudflare Pages — no paid plan required for most projects.
+> [!TIP]
+> **Free hosting friendly** — the light CI pipeline fits comfortably within the free tiers of GitHub Pages or Cloudflare Pages — no paid plan required for most projects.
 
 ## Quick Start
 
