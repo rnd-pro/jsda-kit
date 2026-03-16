@@ -15,6 +15,8 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 
 > **Learn more**: https://github.com/rnd-pro/jsda
 
+**[Symbiote.js](https://github.com/symbiotejs/symbiote.js)** — lightweight Web Components framework used by JSDA-Kit for isomorphic UI: same components render via SSR on the server and hydrate on the client.
+
 ## Key Features
 
 ### ESM-Native Asset Pipeline
@@ -73,6 +75,8 @@ If you've grown tired of fighting meta-platform opaque complexity, JSDA-Kit offe
 | **Debugging** | ~2,500 LOC total — readable source, no black boxes | ~300,000+ LOC framework internals — good luck tracing a build issue |
 | **Vendor lock-in** | None — standard ESM, plain file output, deploy anywhere | Vercel-optimized — self-hosting has documented rough edges |
 | **Flexibility** | Full access to Node.js, custom route/data hooks, any hosting, any structure | Opinionated conventions — step outside them and you fight the framework |
+
+**Image optimization and management** — [Cloud Images Toolkit](https://github.com/rnd-pro/cloud-images-toolkit) handles the media side: CDN synchronization, adaptive image embed code generation, smart local caching, built-in management UI, and interactive widget generation (galleries, panoramas, 360° views). Framework-independent — works with JSDA-Kit (as a prt of ecosystem) or any other project.
 
 > [!IMPORTANT]
 > JSDA-Kit handles projects of any complexity — from a single landing page to a full-scale web application. The difference is: **you stay in control**.
@@ -179,6 +183,7 @@ MIT © [RND-PRO.com](https://rnd-pro.com)
 
 - [JSDA Manifest](https://github.com/rnd-pro/jsda) — JSDA concept and conventions
 - [Symbiote.js](https://github.com/symbiotejs/symbiote.js) — Isomorphic Reactive Web Components framework
+- [Cloud Images Toolkit](https://github.com/rnd-pro/cloud-images-toolkit) — CDN image sync, adaptive embed code generation, media library management UI, and interactive widget generation
 
 ---
 
