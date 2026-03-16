@@ -76,7 +76,7 @@ If you've grown tired of fighting meta-platform opaque complexity, JSDA-Kit offe
 | **Vendor lock-in** | None — standard ESM, plain file output, deploy anywhere | Vercel-optimized — self-hosting has documented rough edges |
 | **Flexibility** | Full access to Node.js, custom route/data hooks, any hosting, any structure | Opinionated conventions — step outside them and you fight the framework |
 
-**Image optimization and management** — [Cloud Images Toolkit](https://github.com/rnd-pro/cloud-images-toolkit) handles the media side: CDN synchronization, adaptive image embed code generation, smart local caching, built-in management UI, and interactive widget generation (galleries, panoramas, 360° views). Framework-independent — works with JSDA-Kit (as a prt of ecosystem) or any other project.
+**Image optimization and management** — [Cloud Images Toolkit](https://github.com/rnd-pro/cloud-images-toolkit) handles the media side: CDN synchronization, adaptive image embed code generation, smart local caching, built-in management UI, and interactive widget generation (galleries, panoramas, 360° views). Framework-independent — works with JSDA-Kit (as a prt of ecosystem) or any other project. Unlike Next.js, which locks image optimization into the Vercel edge network, CIT lets you choose any image CDN — with Cloudflare Images supported out of the box.
 
 > [!IMPORTANT]
 > JSDA-Kit handles projects of any complexity — from a single landing page to a full-scale web application. The difference is: **you stay in control**.
