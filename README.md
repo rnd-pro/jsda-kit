@@ -11,7 +11,7 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 
 ## What is JSDA?
 
-**JSDA** (JavaScript Distributed Web Assets) treats JavaScript ESM modules as text-based web asset generation endpoints — providing PHP-like templating with modern JavaScript and ESM modules.
+**JSDA** (JavaScript Distributed Assets) treats JavaScript ESM modules as text-based web asset generation endpoints — providing PHP-like templating with modern JavaScript and ESM modules.
 
 > **Learn more**: https://github.com/rnd-pro/jsda
 
