@@ -1,6 +1,6 @@
 import http from 'http';
 import fs from 'fs';
-import CFG, { getSsrEnabled, getSsrImports } from '../cfg/CFG.js';
+import CFG, { getSsrEnabled, getSsrImports, getSsrNonce } from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
 import { jsBuild, cssBuild } from './build-asset.js';
 import { htmlMin } from '../node/htmlMin.js';
@@ -163,7 +163,9 @@ export function createServer(options = {}) {
         let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
         html = applyData(html, data);
         let imports = [...getSsrImports(CFG), ...routeSsrImports];
-        html = await wcSsr(html, { imports });
+        let nonce = getSsrNonce(CFG);
+        let ssrOptions = nonce ? { nonce } : {};
+        html = await wcSsr(html, { imports, ssrOptions });
         respond('text/html', htmlMin(html));
       } catch (err) {
         Log.err('Route error:', err);

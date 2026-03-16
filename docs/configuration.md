@@ -79,6 +79,7 @@ export default {
 | `ssr` | `boolean \| object` | `{ enabled: false }` | SSR configuration — `true` enables with defaults |
 | `ssr.enabled` | `boolean` | `false` | Enable Symbiote.js SSR |
 | `ssr.imports` | `string[]` | `[]` | Component module paths to import for SSR |
+| `ssr.cspNonce` | `string` | `''` | CSP nonce added to all inline `<style>` tags during SSR |
 
 When enabled, HTML output is processed through `SSR.processHtml()` after importing the specified component modules. Supports both `ssr: true` (boolean shorthand) and the full object form.
 

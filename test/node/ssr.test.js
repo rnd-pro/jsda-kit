@@ -75,3 +75,19 @@ describe('wcSsr error resilience', () => {
     assert.ok(result.length > 0, 'Should return non-empty result');
   });
 });
+
+describe('wcSsr CSP nonce', () => {
+  it('should accept ssrOptions with nonce without errors', async () => {
+    let html = '<div><p>No custom tags</p></div>';
+    let result = await wcSsr(html, { ssrOptions: { nonce: 'test-nonce-123' } });
+    assert.equal(typeof result, 'string');
+    assert.ok(result.includes('<p>No custom tags</p>'));
+  });
+
+  it('should pass nonce through to SSR for custom elements', async () => {
+    let html = '<div><test-nonce-el>content</test-nonce-el></div>';
+    let result = await wcSsr(html, { ssrOptions: { nonce: 'csp-abc' } });
+    assert.equal(typeof result, 'string');
+    assert.ok(result.length > 0);
+  });
+});

@@ -37,6 +37,8 @@ declare type JSDA_CFG = {
   ssr: boolean | {
     enabled?: boolean;
     imports?: string[];
+    /** CSP nonce string added to all inline style tags during SSR */
+    cspNonce?: string;
   };
 
   importmap: {

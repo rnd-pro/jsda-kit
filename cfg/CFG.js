@@ -62,6 +62,7 @@ const defaults = {
   ssr: {
     enabled: false,
     imports: [],
+    cspNonce: '',
   },
 
   importmap: {
@@ -102,5 +103,14 @@ function getSsrImports(c) {
   return [];
 }
 
-export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports };
+/**
+ * @param {JSDA_CFG} c
+ * @returns {string}
+ */
+function getSsrNonce(c) {
+  if (typeof c.ssr === 'object' && c.ssr?.cspNonce) return c.ssr.cspNonce;
+  return '';
+}
+
+export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports, getSsrNonce };
 export default cfg;

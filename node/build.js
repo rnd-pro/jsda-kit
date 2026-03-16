@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CFG, { getSsrEnabled, getSsrImports } from '../cfg/CFG.js';
+import CFG, { getSsrEnabled, getSsrImports, getSsrNonce } from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
@@ -86,7 +86,9 @@ async function processIndex(indexPath) {
   if (outPath.includes('/index.html')) {
     if (getSsrEnabled(CFG)) {
       let imports = [...getSsrImports(CFG), ...endpointSsrImports];
-      indexSrc = await wcSsr(indexSrc, { imports });
+      let nonce = getSsrNonce(CFG);
+      let ssrOptions = nonce ? { nonce } : {};
+      indexSrc = await wcSsr(indexSrc, { imports, ssrOptions });
     }
     if (CFG.minify.html) {
       indexSrc = htmlMin(indexSrc).toString();
