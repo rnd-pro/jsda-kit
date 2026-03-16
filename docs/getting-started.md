@@ -16,14 +16,29 @@ This creates:
 ```
 project/
 ├── src/
-│   ├── static/         # SSG source files
-│   ├── dynamic/        # Server-side routes
-│   ├── components/     # Symbiote.js components
-│   ├── css/            # Stylesheets
-│   └── md/             # Markdown content
+│   ├── static/                        # SSG source files
+│   ├── dynamic/
+│   │   └── index.html.js              # Sample server-side route
+│   ├── components/
+│   │   ├── app-hello.js               # Sample Symbiote.js component
+│   │   ├── server-only/               # SSR-only components
+│   │   │   ├── server-info.js
+│   │   │   └── exports.js
+│   │   ├── client-only/               # Browser-only components
+│   │   │   ├── client-counter.js
+│   │   │   └── exports.js
+│   │   └── iso/                       # Isomorphic components (SSR + client)
+│   │       ├── iso-card.js
+│   │       └── exports.js
+│   ├── css/                           # Stylesheets
+│   └── md/                            # Markdown content
 ├── types/
-├── project.cfg.js      # Configuration
-└── tsconfig.json
+├── project.cfg.js                     # Configuration
+├── tsconfig.json
+├── .gitignore
+├── .npmrc
+├── README.md
+└── LICENSE
 ```
 
 ## Running the Dev Server
