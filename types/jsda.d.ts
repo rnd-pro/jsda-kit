@@ -53,6 +53,7 @@ declare type JSDA_CFG = {
 declare type cli_commands = {
   ssg: void;
   serve: void;
+  scaffold: void;
   init: void;
   build: void;
 };

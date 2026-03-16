@@ -24,5 +24,9 @@
     "**/*.js",
     "project.cfg.js",
     "types/"
+  ],
+  "exclude": [
+    "node_modules",
+    "cli/scaffolds/project"
   ]
 }

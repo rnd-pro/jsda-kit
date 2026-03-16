@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Log } from '../node/Log.js';
-import { init } from './init.js';
+import { scaffold } from './scaffold.js';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -37,7 +37,7 @@ Commands:
   serve            Start the development server
   build            Build static assets for production
   ssg              Start SSG watcher (dev mode)
-  init             Scaffold a new JSDA project
+  scaffold         Scaffold a new JSDA project (alias: init)
 
 Options:
   --help           Show this help message
@@ -48,7 +48,7 @@ Options:
 Examples:
   jsda serve --port=8080
   jsda build --output=./public
-  jsda init
+  jsda scaffold
 `.trim();
 
 /** @type {Record<keyof cli_commands, (flags: Object) => Promise<void>>} */
@@ -72,8 +72,13 @@ const CMD_MAP = {
     await import('../node/ci.js');
   },
 
+  scaffold: async () => {
+    scaffold();
+  },
+
+  // Backward compatibility alias
   init: async () => {
-    init();
+    scaffold();
   },
 
 };
