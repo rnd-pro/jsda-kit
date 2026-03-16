@@ -37,7 +37,7 @@ Commands:
   serve            Start the development server
   build            Build static assets for production
   ssg              Start SSG watcher (dev mode)
-  scaffold         Scaffold a new JSDA project (alias: init)
+  scaffold         Scaffold a new JSDA project
 
 Options:
   --help           Show this help message
@@ -73,11 +73,6 @@ const CMD_MAP = {
   },
 
   scaffold: async () => {
-    scaffold();
-  },
-
-  // Backward compatibility alias
-  init: async () => {
     scaffold();
   },
 

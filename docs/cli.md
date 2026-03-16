@@ -42,19 +42,21 @@ Start SSG watcher for development. Watches `sourceDir` for changes and rebuilds 
 jsda ssg
 ```
 
-### `init`
+### `scaffold`
 
-Scaffold a new JSDA project.
+Scaffold a new JSDA project with a complete runnable structure.
 
 ```bash
-jsda init
+jsda scaffold
 ```
 
 Creates project structure with:
-- `project.cfg.js` — configuration
-- `src/components/` — sample Symbiote.js component
-- `src/dynamic/` — sample server route
-- `src/static/` — SSG source directory
+- `package.json` — project manifest with `dev` and `build` scripts
+- `project.cfg.js` — configuration with SSR enabled
+- `src/static/` — SSG page rendering README via `md2html`
+- `src/dynamic/` — dynamic routes with `applyData` + `wcSsr`
+- `src/components/` — server-only, client-only, and isomorphic examples
+- `src/css/` — design tokens and CSS reset
 - `tsconfig.json` — TypeScript configuration
 
 ## Global Options

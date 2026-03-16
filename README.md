@@ -48,9 +48,9 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 ### Configuration & DX
 - **Zero-config start** — works out of the box; all settings have sensible defaults
 - **Deep-mergeable config** — `project.cfg.js` is deep-merged with defaults; override only what you need
-- **Project scaffolding** — `jsda init` generates folder structure, config, sample components (server-only, client-only, isomorphic), routes, and dev tooling config
+- **Project scaffolding** — `jsda scaffold` generates a complete runnable project: folder structure, config, sample components (server-only, client-only, isomorphic), routes, static SSG page, CSS design tokens, and dev tooling config
 - **Automatic import maps** — generates `<script type="importmap">` from `package.json` versions with configurable CDN schema, `<link rel="modulepreload">`, and optional polyfills
-- **CLI** — `serve`, `build`, `ssg`, `init` with `--port`, `--output`, `--help`, `--version`
+- **CLI** — `serve`, `build`, `ssg`, `scaffold` with `--port`, `--output`, `--help`, `--version`
 
 ### Isomorphic Utilities
 - **Markdown to HTML** — `md2html()` with syntax highlighting (highlight.js) and automatic heading IDs; works in both Node.js and browser
@@ -90,7 +90,7 @@ If you've grown tired of fighting meta-platform opaque complexity, JSDA-Kit offe
 npm install jsda-kit
 
 # Scaffold a new project
-npx jsda init
+npx jsda scaffold
 
 # Start dev server
 npx jsda serve
@@ -151,7 +151,7 @@ Commands:
   serve            Start the development server
   build            Build static assets for production
   ssg              Start SSG watcher (dev mode)
-  init             Scaffold a new JSDA project
+  scaffold         Scaffold a new JSDA project
 
 Options:
   --help           Show help message
