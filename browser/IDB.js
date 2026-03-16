@@ -33,21 +33,6 @@ export class DbInstance {
     );
   }
 
-  // #getReadyState() {
-  //   return new Promise((resolve, reject) => {
-  //     if (this.#ready) {
-  //       resolve(this.#ready);
-  //     } else {
-  //       let onReadyState = (e) => {
-  //         this.#ready = true;
-  //         window.removeEventListener(READY_EVENT_NAME, onReadyState);
-  //         resolve(this.#ready);
-  //       };
-  //       window.addEventListener(READY_EVENT_NAME, onReadyState);
-  //     }
-  //   });
-  // }
-
   /**
    * @returns {String}
    */
@@ -100,33 +85,6 @@ export class DbInstance {
     
     /** @type {String} */
     this.storeName = storeName;
-    // /** @type {IDBOpenDBRequest} */
-    // this.request = window.indexedDB.open(this.name, this.version);
-    // this.request.onupgradeneeded = (e) => {
-    //   /** @type {IDBDatabase} */
-    //   this.db = e.target['result'];
-    //   // this.#checkStoreName(this.db);
-    //   if (!this.db.objectStoreNames.contains(storeName)) {
-    //     this.objStore = this.db.createObjectStore(storeName, {
-    //       keyPath: '_key',
-    //     });
-    //     this.objStore.transaction.oncomplete = (e) => {
-    //       this.#notifyWhenReady(e);
-    //     };
-    //   }
-    // };
-    // this.request.onblocked = (e) => {
-    //   console.log(e);
-    // };
-    // this.request.onsuccess = (/** @type {StorageEvent} */ e) => {
-    //   // @ts-ignore
-    //   this.db = e.target.result;
-    //   // this.#checkStoreName(this.db);
-    //   this.#notifyWhenReady(e);
-    // };
-    // this.request.onerror = (e) => {
-    //   console.error(e);
-    // };
   
     this.#updateHandler = (/** @type {StorageEvent} */ e) => {
       if (e.key === this.name && this.#subscriptionsMap[e.newValue]) {
@@ -211,7 +169,6 @@ export class DbInstance {
           resolve(e.target.result._value);
         } else {
           resolve(null);
-          // console.warn(`IDB: cannot read "${key}"`);
         }
       };
       request.onerror = (e) => {
