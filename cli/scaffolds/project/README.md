@@ -6,10 +6,15 @@
 
 ```bash
 npm install
-jsda serve
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the dynamic server.
+## SSG Development
+
+```bash
+jsda ssg
+```
+
+Open [http://localhost:3000](http://localhost:3000)
 
 ## Static Build
 
@@ -18,3 +23,9 @@ jsda build
 ```
 
 Output goes to `./dist/`.
+
+## JSDAServer
+
+```bash
+jsda serve
+```

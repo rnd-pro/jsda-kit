@@ -1,1 +1,1 @@
-export { default as ServerInfo } from './server-info.js';
+export * from './server-info/server-info.js';

@@ -5,12 +5,12 @@
     "module": "esnext",
     "moduleResolution": "node",
     "lib": [
-        "ESNext",
-        "ESNext.Array",
-        "DOM",
-        "DOM.Iterable",
-        "WebWorker"
-      ],
+      "ESNext",
+      "ESNext.Array",
+      "DOM",
+      "DOM.Iterable",
+      "WebWorker"
+    ],
     "allowJs": true,
     "checkJs": true,
     "strict": false,
@@ -26,7 +26,6 @@
     "types/"
   ],
   "exclude": [
-    "node_modules",
-    "cli/scaffolds/project/"
+    "node_modules"
   ]
 }

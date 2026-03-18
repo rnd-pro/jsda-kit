@@ -2,10 +2,7 @@ import Symbiote, { html, css } from '@symbiotejs/symbiote';
 
 class AppHello extends Symbiote {
   isoMode = true;
-
-  init$ = {
-    name: 'World',
-  };
+  name = 'World';
 }
 
 AppHello.template = html`
@@ -16,7 +13,6 @@ AppHello.rootStyles = css`
 app-hello {
   display: block;
   padding: 1em;
-  font-family: system-ui, sans-serif;
 
   .greeting {
     font-size: 1.5rem;

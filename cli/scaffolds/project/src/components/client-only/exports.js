@@ -1,1 +1,1 @@
-export { default as ClientCounter } from './client-counter.js';
+export * from './client-counter/client-counter.js';

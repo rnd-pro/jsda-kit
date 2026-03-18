@@ -52,39 +52,22 @@ function createFile(filePath, content) {
   }
 }
 
-const PROJECT_CFG = `import { getDataFn, getRouteFn } from './src/dynamic/node/handlers.js';
-
-/** @type {JSDA_CFG} */
-export default {
-  dynamic: {
-    port: 3000,
-    routes: './src/dynamic/routes.js',
-    baseDir: './src/dynamic/',
-    getRouteFn,
-    getDataFn,
-  },
-  static: {
-    outputDir: './dist',
-    sourceDir: './src/static',
-  },
-  ssr: {
-    enabled: true,
-    imports: [
-      './src/components/server-only/exports.js',
-      './src/components/iso/exports.js',
-    ],
-  },
-  importmap: {
-    packageList: ['@symbiotejs/symbiote'],
-  },
-};
-`;
-
 export function scaffold() {
-  // 1. Copy scaffold file tree
+  // 1. Copy scaffold file tree (includes project.cfg.js)
   copyTree(SCAFFOLD_DIR, '.');
 
-  // 2. Generate package.json with project folder name
+  // 2. Rename tsconfig template (.tpl extension avoids affecting root TS config)
+  if (fs.existsSync('./tsconfig.json.tpl')) {
+    if (!fs.existsSync('./tsconfig.json')) {
+      fs.renameSync('./tsconfig.json.tpl', './tsconfig.json');
+      Log.success('File created:', './tsconfig.json');
+    } else {
+      fs.unlinkSync('./tsconfig.json.tpl');
+      Log.warn('File already exists:', './tsconfig.json');
+    }
+  }
+
+  // 3. Generate package.json with project folder name
   let folderName = path.basename(process.cwd());
   let packageJson = JSON.stringify({
     name: folderName,
@@ -103,27 +86,4 @@ export function scaffold() {
     },
   }, null, 2) + '\n';
   createFile('./package.json', packageJson);
-
-  // 3. Generate project.cfg.js
-  createFile('./project.cfg.js', PROJECT_CFG);
-
-  // 4. Copy tsconfig.json from package
-  let tsconfigSrc = './node_modules/jsda-kit/tsconfig.json';
-  if (fs.existsSync(tsconfigSrc)) {
-    createFile('./tsconfig.json', fs.readFileSync(tsconfigSrc, 'utf8'));
-  } else {
-    // Fallback: create a sensible default
-    createFile('./tsconfig.json', JSON.stringify({
-      compilerOptions: {
-        target: 'ESNext',
-        module: 'ESNext',
-        moduleResolution: 'bundler',
-        checkJs: true,
-        noEmit: true,
-        strict: false,
-        skipLibCheck: true,
-      },
-      include: ['src/**/*.js', 'types/**/*.d.ts'],
-    }, null, 2) + '\n');
-  }
 }
