@@ -46,7 +46,7 @@
     "test:unit": "node --test test/node/**/*.test.js test/iso/**/*.test.js",
     "test:server": "node --test test/server/**/*.test.js",
     "test:browser": "npx playwright test",
-    "types": "tsc",
+    "types": "npx -y -p typescript tsc",
     "pub": "npm run types && npm test && npm publish"
   },
   "dependencies": {

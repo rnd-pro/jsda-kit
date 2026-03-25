@@ -2,8 +2,7 @@
   "compilerOptions": {
     "pretty": true,
     "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+
     "lib": [
         "ESNext",
         "ESNext.Array",
