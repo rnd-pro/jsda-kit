@@ -48,7 +48,7 @@ function onFsChange() {
     err && Log.err('JSDA Static error: ', err);
     stdout && Log.info(...fmtOut(stdout));
     stderr && Log.err(...fmtOut(stderr));
-    if (!err) startServe();
+    startServe();
   });
 }
 
