@@ -15,6 +15,7 @@ declare type JSDA_CFG = {
   static: {
     outputDir: string;
     sourceDir: string;
+    port: number;
   };
 
   minify: {

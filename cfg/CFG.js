@@ -41,6 +41,7 @@ const defaults = {
   static: {
     outputDir: './dist',
     sourceDir: './src/static',
+    port: 3001,
   },
 
   minify: {

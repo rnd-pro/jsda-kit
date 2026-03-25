@@ -14,6 +14,7 @@ let serveStarted = false;
 
 let src = CFG.static.sourceDir;
 let out = CFG.static.outputDir;
+let port = CFG.static.port;
 
 /**
  * 
@@ -37,10 +38,18 @@ function fmtOut(str) {
 function startServe() {
   if (serveStarted) return;
   serveStarted = true;
-  let serve = spawn('npx', ['serve', out], { stdio: 'inherit', shell: true });
+  let serve = spawn('npx', ['-y', 'serve', out, '-l', String(port)], { stdio: 'pipe', shell: true });
+  serve.stdout.on('data', (data) => {
+    let str = data.toString();
+    process.stdout.write(str);
+  });
+  serve.stderr.on('data', (data) => {
+    process.stderr.write(data.toString());
+  });
   serve.on('error', (err) => {
     Log.err('Serve error:', err);
   });
+  Log.info('SSG Serve:', `http://localhost:${port}`);
 }
 
 function onFsChange() {
