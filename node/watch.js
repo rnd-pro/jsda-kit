@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { execFile, spawn } from 'child_process'; // child_process is used to drop nested ESM cache in JSDA files
+import { spawn } from 'child_process';
 import CFG from '../cfg/CFG.js';
 import { Log } from './Log.js';
 
@@ -16,35 +16,15 @@ let src = CFG.static.sourceDir;
 let out = CFG.static.outputDir;
 let port = CFG.static.port;
 
-/**
- * 
- * @param {String} str 
- * @returns 
- */
-function fmtOut(str) {
-  if (str.startsWith('>')) {
-    str = str.replace(/^>/, '');
-  }
-  /** @type {[string, ...any]} */
-  // @ts-expect-error
-  let res = str.split(':');
-  if (res.length > 1) {
-    res[0] = res[0].trim() + ':';
-    res[1] = res[1].trim();
-  }
-  return res;
-}
-
 function startServe() {
   if (serveStarted) return;
   serveStarted = true;
   let serve = spawn('npx', ['-y', 'serve', out, '-l', String(port)], { stdio: 'pipe', shell: true });
   serve.stdout.on('data', (data) => {
-    let str = data.toString();
-    process.stdout.write(str);
+    process.stdout.write(data);
   });
   serve.stderr.on('data', (data) => {
-    process.stderr.write(data.toString());
+    process.stderr.write(data);
   });
   serve.on('error', (err) => {
     Log.err('Serve error:', err);
@@ -53,10 +33,11 @@ function startServe() {
 }
 
 function onFsChange() {
-  cp = execFile('node', [processor, src], (err, stdout, stderr) => {
-    err && Log.err('JSDA Static error: ', err);
-    stdout && Log.info(...fmtOut(stdout));
-    stderr && Log.err(...fmtOut(stderr));
+  cp = spawn('node', [processor], { stdio: 'inherit' });
+  cp.on('close', (code) => {
+    if (code !== 0) {
+      Log.err('JSDA Static error:', 'exit code ' + code);
+    }
     startServe();
   });
 }
