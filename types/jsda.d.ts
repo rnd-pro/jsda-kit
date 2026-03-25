@@ -1,53 +1,53 @@
 declare type JSDA_CFG = {
   
-  dynamic: {
+  dynamic?: Partial<{
     port: number;
     routes: string;
-    cache: {
+    cache: Partial<{
       inMemory: boolean;
       exclude: string[];
-    };
+    }>;
     baseDir: string;
     getRouteFn: (url: string, headers: import('http').IncomingHttpHeaders) => Promise<string>;
     getDataFn: (route: string, url: string, headers: import('http').IncomingHttpHeaders) => Promise<{ [key: string]: string }>;
-  };
+  }>;
 
-  static: {
+  static?: Partial<{
     outputDir: string;
     sourceDir: string;
     port: number;
-  };
+  }>;
 
-  minify: {
+  minify?: Partial<{
     js: boolean;
     css: boolean;
     html: boolean;
     svg: boolean;
     exclude: string[];
-  };
+  }>;
 
-  bundle: {
+  bundle?: Partial<{
     js: boolean;
     css: boolean;
     exclude: string[];
-  };
+  }>;
 
-  log: boolean;
+  log?: boolean;
 
   /** SSR configuration — `true` enables with defaults, or pass object for full control */
-  ssr: boolean | {
+  ssr?: boolean | {
     enabled?: boolean;
     imports?: string[];
     /** CSP nonce string added to all inline style tags during SSR */
     cspNonce?: string;
   };
 
-  importmap: {
+  importmap?: Partial<{
     packageList: string[];
     srcSchema: string;
     polyfills: boolean;
     preload: boolean;
-  };
+  }>;
 
 };
 
