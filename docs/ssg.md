@@ -65,7 +65,7 @@ npx jsda build --output=./public
 
 ## SSG Watcher
 
-For development, the watcher rebuilds on file changes:
+For development, the watcher rebuilds on file changes and starts a local static file server (`npx serve`) on the output directory after the first successful build:
 
 ```bash
 npx jsda ssg

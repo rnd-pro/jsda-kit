@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { execFile } from 'child_process'; // child_process is used to drop nested ESM cache in JSDA files
+import { execFile, spawn } from 'child_process'; // child_process is used to drop nested ESM cache in JSDA files
 import CFG from '../cfg/CFG.js';
 import { Log } from './Log.js';
 
@@ -10,8 +10,10 @@ let processor = fs.existsSync('./node_modules/jsda-kit/node/ci.js')
 let watchTimeout;
 /** @type {import('child_process').ChildProcess} */
 let cp;
+let serveStarted = false;
 
 let src = CFG.static.sourceDir;
+let out = CFG.static.outputDir;
 
 /**
  * 
@@ -32,11 +34,21 @@ function fmtOut(str) {
   return res;
 }
 
+function startServe() {
+  if (serveStarted) return;
+  serveStarted = true;
+  let serve = spawn('npx', ['serve', out], { stdio: 'inherit', shell: true });
+  serve.on('error', (err) => {
+    Log.err('Serve error:', err);
+  });
+}
+
 function onFsChange() {
   cp = execFile('node', [processor, src], (err, stdout, stderr) => {
     err && Log.err('JSDA Static error: ', err);
     stdout && Log.info(...fmtOut(stdout));
     stderr && Log.err(...fmtOut(stderr));
+    if (!err) startServe();
   });
 }
 
