@@ -95,6 +95,9 @@ npx jsda scaffold
 # Start dev server
 npx jsda serve
 
+# Start SSG watcher (dev mode)
+npx jsda ssg
+
 # Build for production
 npx jsda build
 ```

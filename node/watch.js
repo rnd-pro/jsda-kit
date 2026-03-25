@@ -34,7 +34,7 @@ function startServe() {
 
 function onFsChange() {
   cp = spawn('node', [processor], { stdio: 'inherit' });
-  cp.on('close', (code) => {
+  cp.on('exit', (code) => {
     if (code !== 0) {
       Log.err('JSDA Static error:', 'exit code ' + code);
     }
