@@ -45,7 +45,9 @@
     "test": "node --test test/node/**/*.test.js test/iso/**/*.test.js test/server/**/*.test.js && npx playwright test",
     "test:unit": "node --test test/node/**/*.test.js test/iso/**/*.test.js",
     "test:server": "node --test test/server/**/*.test.js",
-    "test:browser": "npx playwright test"
+    "test:browser": "npx playwright test",
+    "types": "tsc",
+    "pub": "npm run types && npm test && npm publish"
   },
   "dependencies": {
     "@minify-html/node": "^0.16.4",
