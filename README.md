@@ -38,6 +38,7 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 - **esbuild-powered** — JS/CSS bundling with tree-shaking, ESM output; works both at build time and on-the-fly during `serve`
 - **Tagged template minification** — `html` and `css` tagged template literals minified automatically inside bundles; untagged templates left untouched
 - **Asset minification** — HTML (via `@minify-html/node`), CSS, and SVG minified by default with per-file excludes
+- **Automatic sitemap** — generates `sitemap.xml` from built HTML pages with configurable base URL, exclusions, `lastmod`, change frequency, and priority
 - **SSG watcher** — `jsda ssg` rebuilds on file changes during development
 
 ### JSDA Server
@@ -47,7 +48,7 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 
 ### Configuration & DX
 - **Zero-config start** — works out of the box; all settings have sensible defaults
-- **Deep-mergeable config** — `project.cfg.js` is deep-merged with defaults; override only what you need
+- **Deep-mergeable config** — `project.cfg.js` is deep-merged with defaults; override only what you need; `boolean` shorthand for feature toggles (SSR, sitemap)
 - **Project scaffolding** — `jsda scaffold` generates a complete runnable project: folder structure, config, sample components (server-only, client-only, isomorphic), routes, static SSG page, CSS design tokens, and dev tooling config
 - **Automatic import maps** — generates `<script type="importmap">` from `package.json` versions with configurable CDN schema, `<link rel="modulepreload">`, and optional polyfills
 - **CLI** — `serve`, `build`, `ssg`, `scaffold` with `--port`, `--output`, `--help`, `--version`

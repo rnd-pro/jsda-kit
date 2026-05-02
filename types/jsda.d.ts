@@ -49,6 +49,21 @@ declare type JSDA_CFG = {
     preload: boolean;
   }>;
 
+  /** Sitemap generation — `true` enables with defaults, or pass object for full control */
+  sitemap?: boolean | Partial<{
+    enabled: boolean;
+    /** Required when enabled, e.g. 'https://example.com' */
+    baseUrl: string;
+    /** URL path substrings to exclude from sitemap */
+    exclude: string[];
+    /** Default changefreq for all entries */
+    changefreq: string;
+    /** Default priority for all entries */
+    priority: string;
+    /** Output filename (default: 'sitemap.xml') */
+    filename: string;
+  }>;
+
 };
 
 declare type cli_commands = {

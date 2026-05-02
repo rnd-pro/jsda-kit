@@ -83,3 +83,64 @@ let preserved = html`
   keep   this   spacing
 `;
 ```
+
+## Sitemap Generation
+
+The build pipeline can automatically generate a `sitemap.xml` from the produced HTML pages.
+
+### Configuration
+
+Enable in `project.cfg.js`:
+
+```js
+export default {
+  static: {
+    sourceDir: './src/static',
+    outputDir: './dist',
+  },
+  sitemap: {
+    enabled: true,
+    baseUrl: 'https://example.com',
+  },
+};
+```
+
+Full options:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | `boolean` | `false` | Enable sitemap generation |
+| `baseUrl` | `string` | `''` | **Required.** Site origin for absolute URLs |
+| `exclude` | `string[]` | `[]` | URL path substrings to exclude |
+| `changefreq` | `string` | `''` | Default change frequency for all entries |
+| `priority` | `string` | `''` | Default priority for all entries |
+| `filename` | `string` | `'sitemap.xml'` | Output filename |
+
+Shorthand: `sitemap: true` enables with defaults (you still need `baseUrl` set separately, or it will warn and skip).
+
+### Path Normalization
+
+Output paths are normalized for clean URLs:
+
+```
+dist/index.html         → https://example.com/
+dist/about/index.html   → https://example.com/about/
+dist/404.html           → https://example.com/404.html
+```
+
+### Exclusions
+
+Paths are filtered by substring matching against the normalized URL path:
+
+```js
+sitemap: {
+  enabled: true,
+  baseUrl: 'https://example.com',
+  exclude: ['/admin/', '/internal/'],
+},
+```
+
+### `lastmod`
+
+Each `<url>` entry includes a `<lastmod>` date derived from the output file's modification time.
+

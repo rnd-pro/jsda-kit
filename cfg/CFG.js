@@ -72,7 +72,16 @@ const defaults = {
     polyfills: false,
     preload: true,
   },
-  
+
+  sitemap: {
+    enabled: false,
+    baseUrl: '',
+    exclude: [],
+    changefreq: '',
+    priority: '',
+    filename: 'sitemap.xml',
+  },
+
 }
 
 /** @type {JSDA_CFG} */
@@ -113,5 +122,32 @@ function getSsrNonce(c) {
   return '';
 }
 
-export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports, getSsrNonce };
+/**
+ * @param {JSDA_CFG} c
+ * @returns {boolean}
+ */
+function getSitemapEnabled(c) {
+  if (typeof c.sitemap === 'boolean') return c.sitemap;
+  return !!c.sitemap?.enabled;
+}
+
+/**
+ * @param {JSDA_CFG} c
+ * @returns {{ baseUrl: string, exclude: string[], changefreq: string, priority: string, filename: string }}
+ */
+function getSitemapConfig(c) {
+  let d = /** @type {Required<Exclude<JSDA_CFG['sitemap'], boolean | undefined>>} */ (defaults.sitemap);
+  if (typeof c.sitemap !== 'object' || !c.sitemap) return { ...d };
+  /** @type {Partial<typeof d>} */
+  let s = c.sitemap;
+  return {
+    baseUrl: s.baseUrl || d.baseUrl,
+    exclude: s.exclude || d.exclude,
+    changefreq: s.changefreq || d.changefreq,
+    priority: s.priority || d.priority,
+    filename: s.filename || d.filename,
+  };
+}
+
+export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports, getSsrNonce, getSitemapEnabled, getSitemapConfig };
 export default cfg;

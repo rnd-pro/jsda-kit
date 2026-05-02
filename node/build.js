@@ -9,6 +9,7 @@ import { htmlMin } from './htmlMin.js';
 import { cssMin } from './cssMin.js';
 import { wcSsr } from './wcSsr.js';
 import { getExternalDeps } from '../server/getExternalDeps.js';
+import { generateSitemap } from './sitemap.js';
 
 /**
  * @param {String} path
@@ -108,4 +109,5 @@ export async function build() {
   let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
   Log.info('Processing JSDA entries:', indexArr);
   await Promise.all(indexArr.map(processIndex));
+  await generateSitemap();
 }
