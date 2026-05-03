@@ -11,11 +11,14 @@ The SSR pipeline:
 3. **Component rendering** — `SSR.processHtml()` processes all custom elements in the HTML
 4. **Minification** — HTML is minified before serving
 
-Custom elements must be registered Symbiote.js components with `customElements.define()` (via `.reg()`).
+Custom elements must be registered Symbiote.js components (via `.reg()`).
 
 ## SSR Component Imports
 
 For SSR to render custom elements, their component modules must be imported into the Node runtime. JSDA-Kit provides three levels of SSR imports:
+
+> **Important:** Import strings are paths from the project root, not relative paths to the modules.
+> See [SSR Import Formats](./ssr-imports.md) for details on supported file types and barrel files.
 
 ### Global Imports
 
