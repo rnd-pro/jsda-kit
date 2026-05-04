@@ -50,14 +50,9 @@ Scaffold a new JSDA project with a complete runnable structure.
 jsda scaffold
 ```
 
-Creates project structure with:
-- `package.json` — project manifest with `dev` and `build` scripts
-- `project.cfg.js` — configuration with SSR enabled
-- `src/static/` — SSG page rendering README via `md2html`
-- `src/dynamic/` — dynamic routes with `applyData` + `wcSsr`
-- `src/components/` — server-only, client-only, and isomorphic examples
-- `src/css/` — design tokens and CSS reset
-- `tsconfig.json` — TypeScript configuration
+Creates project structure by fetching the official [JSDA Template](https://github.com/rnd-pro/jsda-template).
+
+See the [Live Demo](https://rnd-pro.github.io/jsda-template/) or read the [Scaffolding Guide](./scaffolding.md) for more details on the included structure.
 
 ## Global Options
 

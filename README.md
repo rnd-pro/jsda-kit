@@ -49,7 +49,7 @@ A comprehensive toolkit for building modern web applications with Static Site Ge
 ### Configuration & DX
 - **Zero-config start** — works out of the box; all settings have sensible defaults
 - **Deep-mergeable config** — `project.cfg.js` is deep-merged with defaults; override only what you need; `boolean` shorthand for feature toggles (SSR, sitemap)
-- **Project scaffolding** — `jsda scaffold` generates a complete runnable project: folder structure, config, sample components (server-only, client-only, isomorphic), routes, static SSG page, CSS design tokens, and dev tooling config
+- **Project scaffolding** — `jsda scaffold` fetches a complete runnable template ([Live Demo](https://rnd-pro.github.io/jsda-template/)) with folder structure, config, sample components (server-only, client-only, isomorphic), routes, static SSG page, CSS design tokens, and dev tooling config
 - **Automatic import maps** — generates `<script type="importmap">` from `package.json` versions with configurable CDN schema, `<link rel="modulepreload">`, and optional polyfills
 - **CLI** — `serve`, `build`, `ssg`, `scaffold` with `--port`, `--output`, `--help`, `--version`
 
@@ -176,6 +176,7 @@ Detailed docs in the [`docs/`](./docs/) folder:
 - [Server](./docs/server.md)
 - [Import Maps](./docs/import-maps.md)
 - [CLI](./docs/cli.md)
+- [Scaffolding](./docs/scaffolding.md)
 - [Browser Utilities](./docs/browser-utilities.md)
 - [API Reference](./docs/api-reference.md)
 
