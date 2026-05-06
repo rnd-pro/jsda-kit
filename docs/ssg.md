@@ -25,6 +25,10 @@ Files named `index.js` (without a second extension) are treated as JavaScript bu
 
 ```js
 // src/static/index.html.js
+export const ssrImports = [
+  './src/components/app-header.js'
+];
+
 export default /*html*/ `
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +38,7 @@ export default /*html*/ `
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+  <app-header></app-header>
   <h1>Welcome</h1>
   <script type="module" src="/app/index.js"></script>
 </body>

@@ -50,3 +50,25 @@ export default {
 ```
 
 This ensures the component's registration code runs correctly for the current SSR session.
+
+## Per-Endpoint Imports
+
+In addition to global imports defined in `project.cfg.js`, you can specify SSR component imports on a per-page basis. This is done by exporting an `ssrImports` array directly from any JSDA `.html.js` endpoint (both static SSG pages and dynamic routes).
+
+```js
+// src/static/index.html.js
+export const ssrImports = [
+  './src/components/app-header.js',
+  './src/components/app-footer.js', // Direct import
+  './src/components/index.js'       // Or a barrel file
+];
+
+export default /*html*/ `
+<!DOCTYPE html>
+<html>...</html>
+`;
+```
+
+These endpoint-specific imports are automatically merged with any global `imports` during the SSR process. This strategy allows you to load components only for the pages that actually require them, optimizing the SSR pipeline by keeping the Node.js memory footprint and processing time minimal for individual requests or SSG builds.
+
+The same cache-busting mechanisms and file format requirements (Standard ES Modules, Barrel Files) described above apply to all paths specified within a per-endpoint `ssrImports` array.

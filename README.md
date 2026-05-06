@@ -187,6 +187,7 @@ MIT © [RND-PRO.com](https://rnd-pro.com)
 ## Related Projects
 
 - [JSDA Manifest](https://github.com/rnd-pro/jsda) — JSDA concept and conventions
+- [JSDA Project Template](https://github.com/rnd-pro/jsda-template) — official starter template repository
 - [Symbiote.js](https://github.com/symbiotejs/symbiote.js) — Isomorphic Reactive Web Components framework
 - [Cloud Images Toolkit](https://github.com/rnd-pro/cloud-images-toolkit) — CDN image sync, adaptive embed code generation, media library management UI, and interactive widget generation
 
