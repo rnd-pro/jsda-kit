@@ -8,8 +8,8 @@ declare type JSDA_CFG = {
       exclude: string[];
     }>;
     baseDir: string;
-    getRouteFn: (url: string, headers: import('http').IncomingHttpHeaders) => Promise<string>;
-    getDataFn: (route: string, url: string, headers: import('http').IncomingHttpHeaders) => Promise<{ [key: string]: string }>;
+    getRouteFn?: (url: string, headers: import('http').IncomingHttpHeaders) => Promise<string>;
+    getDataFn?: (route: string, url: string, headers: import('http').IncomingHttpHeaders) => Promise<{ [key: string]: string }>;
   }>;
 
   static?: Partial<{

@@ -1,6 +1,6 @@
 import http from 'http';
 import fs from 'fs';
-import CFG, { getSsrEnabled, getSsrImports, getSsrNonce } from '../cfg/CFG.js';
+import CFG, { getSsrImports, getSsrNonce } from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
 import { jsBuild, cssBuild } from './build-asset.js';
 import { htmlMin } from '../node/htmlMin.js';
@@ -15,6 +15,11 @@ const cache = Object.create(null);
 
 const encPart = '; charset=utf-8';
 
+/**
+ * 
+ * @param {String} url 
+ * @returns {Boolean}
+ */
 function isJsda(url) {
   let result = false;
   let fileName = url
@@ -30,10 +35,44 @@ function isJsda(url) {
   return result;
 }
 
+/**
+ * 
+ * @param {String} url 
+ * @returns {String} - file extension
+ */
 function getExt(url) {
   return url.split('/').pop().split('.js')[0].split('.').pop().toLowerCase();
 }
 
+/**
+ * 
+ * @param {Object} jsdaMdl 
+ * @param {String} routeKey 
+ * @param {String} reqUrl 
+ * @param {Object} reqHeaders 
+ * @returns {Promise<String>} - HTML string
+ */
+async function processHtmlPipeline(jsdaMdl, routeKey, reqUrl, reqHeaders) {
+  let html = jsdaMdl.default;
+  if (typeof html !== 'string') {
+    throw new Error('JSDA HTML module must export a string as default. Type: ' + typeof html + ', Keys: ' + Object.keys(jsdaMdl).join(', '));
+  }
+  let ssrImports = jsdaMdl.ssrImports ? jsdaMdl.ssrImports.map(imp => {
+    return imp.startsWith('/') ? pth(CFG.dynamic.baseDir + imp.slice(1)) : imp;
+  }) : [];
+  let data = (await CFG.dynamic.getDataFn(routeKey, reqUrl, reqHeaders)) || {};
+  html = applyData(html, data);
+  let imports = [...getSsrImports(CFG), ...ssrImports];
+  let nonce = getSsrNonce(CFG);
+  let ssrOptions = nonce ? { nonce } : {};
+  html = await wcSsr(html, { imports, ssrOptions });
+  return CFG.minify.html ? htmlMin(html) : html;
+}
+
+/**
+ * 
+ * @param {Object} [options={}]
+ */
 export function createServer(options = {}) {
   // Override CFG with options
   if (options.cache) {
@@ -43,7 +82,7 @@ export function createServer(options = {}) {
     CFG.dynamic.port = options.port;
   }
 
-  const DWAServer = http.createServer(async (req, res) => {
+  const JSDAServer = http.createServer(async (req, res) => {
 
     /**
      * 
@@ -113,19 +152,24 @@ export function createServer(options = {}) {
       // Handle any JSDA:
       try {
         let fileExt = getExt(req.url);
-        // let dwaPath = pth(filePath, true);
-        let fileTxt = (await import(pth(filePath) + params)).default;
-        if (typeof fileTxt === 'string') {
-          if (fileExt === 'html' && CFG.minify.html) {
-            fileTxt = htmlMin(fileTxt);
-          }
-          if (fileExt === 'css' && CFG.minify.css) {
-            fileTxt = cssMin(fileTxt);
-          }
-          respond(MIME_TYPES[fileExt], fileTxt);
+        let jsdaMdl = await import(pth(filePath) + params);
+        
+        let mimeType = MIME_TYPES[fileExt];
+        if (mimeType === 'text/html') {
+          let routeKey = req.url.split('?')[0];
+          let html = await processHtmlPipeline(jsdaMdl, routeKey, req.url, req.headers);
+          respond(mimeType, html);
         } else {
-          Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + filePath + params);
-          respond('text/plain', 'JSDA IMPORT ERROR', 500);
+          let fileTxt = jsdaMdl.default;
+          if (typeof fileTxt === 'string') {
+            if (mimeType === 'text/css' && CFG.minify.css) {
+              fileTxt = cssMin(fileTxt);
+            }
+            respond(mimeType, fileTxt);
+          } else {
+            Log.err('JSDA IMPORT ERROR: ', req.url + ' > ' + filePath + params);
+            respond('text/plain', 'JSDA IMPORT ERROR', 500);
+          }
         }
       } catch (err) {
         Log.err('JSDA File error:', err, filePath + params);
@@ -137,36 +181,30 @@ export function createServer(options = {}) {
       if (fs.existsSync(filePath)) {
         let fileTxt = fs.readFileSync(filePath).toString();
         let fileExt = getExt(req.url);
-        if (fileExt === 'html' && CFG.minify.html) {
+        let mimeType = MIME_TYPES[fileExt];
+        if (mimeType === 'text/html' && CFG.minify.html) {
           fileTxt = htmlMin(fileTxt);
         }
-        if (fileExt === 'css' && CFG.minify.css) {
+        if (mimeType === 'text/css' && CFG.minify.css) {
           fileTxt = cssMin(fileTxt);
         }
-        respond(MIME_TYPES[req.url.split('.')[1].split('?')[0].toLowerCase()], fileTxt);
+        respond(mimeType, fileTxt);
       } else {
         respond('text/plain', '404', 404);
       }
       return;
     }
 
-    // Process routes:
-    let route = req.url.split('?')[0];
-    route.endsWith('/') || (route += '/');
-    let routes = (await import(pth(CFG.dynamic.routes))).default;
-    if (routes[route]) {
+    // Process pre-defined server routes:
+    let reqPath = req.url.split('?')[0];
+    reqPath.endsWith('/') || (reqPath += '/');
+    let serverRoutes = (await import(pth(CFG.dynamic.routes))).default;
+    if (serverRoutes[reqPath]) {
       try {
-        route = (await CFG.dynamic.getRouteFn(req.url, req.headers)) || route;
-        let routeMdl = await import(pth(routes[route]) + params);
-        let html = routeMdl.default;
-        let routeSsrImports = routeMdl.ssrImports || [];
-        let data = (await CFG.dynamic.getDataFn(route, req.url, req.headers)) || {};
-        html = applyData(html, data);
-        let imports = [...getSsrImports(CFG), ...routeSsrImports];
-        let nonce = getSsrNonce(CFG);
-        let ssrOptions = nonce ? { nonce } : {};
-        html = await wcSsr(html, { imports, ssrOptions });
-        respond('text/html', htmlMin(html));
+        let routeKey = (await CFG.dynamic.getRouteFn(req.url, req.headers)) || reqPath;
+        let routeMdl = await import(pth(serverRoutes[routeKey]) + params);
+        let html = await processHtmlPipeline(routeMdl, routeKey, req.url, req.headers);
+        respond('text/html', html);
       } catch (err) {
         Log.err('Route error:', err);
         respond('text/plain', 'JSDA ROUTE ERROR', 500);
@@ -177,9 +215,9 @@ export function createServer(options = {}) {
     }
   });
 
-  DWAServer.listen(CFG.dynamic.port, () => {
+  JSDAServer.listen(CFG.dynamic.port, () => {
     Log.success('HTTP server started:', `http://localhost:${CFG.dynamic.port}`);
   });
 
-  return DWAServer;
+  return JSDAServer;
 }

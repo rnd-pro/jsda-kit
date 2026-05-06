@@ -131,6 +131,58 @@ test.describe('scaffold: jsda serve', () => {
     let response = await page.goto(BASE_URL + '/nonexistent-page/');
     expect(response.status()).toBe(404);
   });
+
+  test('direct JSDA .html.js request runs through SSR pipeline', async ({ request }) => {
+    let testWidget = `
+      import Symbiote, { html } from '@symbiotejs/symbiote';
+      class TestWidget extends Symbiote {
+        isoMode = true;
+      }
+      TestWidget.template = html\`<div class="test-inner-content">SSR WORKS</div>\`;
+      TestWidget.reg('test-widget');
+    `;
+    fs.writeFileSync(path.join(tmpDir, 'src', 'dynamic-pages', 'test-widget.js'), testWidget);
+
+    let testHtml = `
+      export const ssrImports = ['/test-widget.js'];
+      export default '<test-widget></test-widget>';
+    `;
+    fs.writeFileSync(path.join(tmpDir, 'src', 'dynamic-pages', 'test-direct.html.js'), testHtml);
+    
+    let response = await request.get(BASE_URL + '/test-direct.html.js');
+    let htmlStr = await response.text();
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('text/html');
+    expect(htmlStr).toContain('test-widget');
+    // Verify the independent component was instantiated and rendered its template
+    expect(htmlStr).toContain('class=test-inner-content>SSR WORKS</div>');
+  });
+
+  test('direct JSDA .htm.js request is resolved via MIME mapping and runs through SSR pipeline', async ({ request }) => {
+    let testWidget = `
+      import Symbiote, { html } from '@symbiotejs/symbiote';
+      class TestWidgetHtm extends Symbiote {
+        isoMode = true;
+      }
+      TestWidgetHtm.template = html\`<div class="test-inner-htm-content">HTM SSR WORKS</div>\`;
+      TestWidgetHtm.reg('test-widget-htm');
+    `;
+    fs.writeFileSync(path.join(tmpDir, 'src', 'dynamic-pages', 'test-widget-htm.js'), testWidget);
+
+    let testHtml = `
+      export const ssrImports = ['/test-widget-htm.js'];
+      export default '<test-widget-htm></test-widget-htm>';
+    `;
+    fs.writeFileSync(path.join(tmpDir, 'src', 'dynamic-pages', 'test-direct.htm.js'), testHtml);
+    
+    let response = await request.get(BASE_URL + '/test-direct.htm.js');
+    let htmlStr = await response.text();
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('text/html');
+    expect(htmlStr).toContain('test-widget-htm');
+    // Verify the independent component was instantiated and rendered its template
+    expect(htmlStr).toContain('class=test-inner-htm-content>HTM SSR WORKS</div>');
+  });
 });
 
 // --- jsda build ---

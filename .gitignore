@@ -16,7 +16,9 @@ TMP
 build
 dist
 env
+test-results
 .last-run.json
+.project-graph-cache.json
 
 ## Cloud Images Toolkit
 cit/cit-store/
