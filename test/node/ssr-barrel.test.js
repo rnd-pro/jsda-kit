@@ -2,6 +2,27 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { wcSsr } from '../../node/wcSsr.js';
 
+describe('SSR single component direct import', () => {
+  it('multi-session: single component renders on SECOND call (cache-busting)', async () => {
+    let html = '<div><iso-greeting></iso-greeting></div>';
+
+    let result1 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/iso-greeting.js'],
+    });
+    console.log('[direct import session 1]:', result1);
+
+    let result2 = await wcSsr(html, {
+      imports: ['./test/fixtures/components/iso-greeting.js'],
+    });
+    console.log('[direct import session 2]:', result2);
+
+    assert.ok(result2.includes('Hello, World!'),
+      'iso-greeting should render in second session (direct import)');
+    assert.ok(result2.includes('<div class="greeting">'),
+      'iso-greeting should have inner markup in second session');
+  });
+});
+
 describe('SSR barrel file imports', () => {
   it('single session: barrel import renders both components', async () => {
     let html = '<div><barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b></div>';

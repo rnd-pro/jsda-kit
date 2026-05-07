@@ -50,6 +50,12 @@ async function loadSsrImports(imports) {
       barrelSpecifiers.add(match[1]);
     }
 
+    // 3) `import <bindings> from './path'` — import-then-export barrels & multi-line imports
+    let importFromRe = /\bfrom\s+['"](\.[^'"]+)['"]/gm;
+    while ((match = importFromRe.exec(source)) !== null) {
+      barrelSpecifiers.add(match[1]);
+    }
+
     if (barrelSpecifiers.size) {
       // Barrel file — import each inner module individually with cache-busting
       for (let specifier of barrelSpecifiers) {
@@ -60,13 +66,14 @@ async function loadSsrImports(imports) {
           Log.warn('[WC SSR] Failed to import re-export:', specifier, e.message);
         }
       }
-    } else {
-      // Single component file — import directly with cache-busting
-      try {
-        await import(fileUrl + ts);
-      } catch (e) {
-        Log.warn('[WC SSR] Failed to import:', imp, e.message);
-      }
+    }
+
+    // Always import the file itself — it may define its own components
+    // alongside barrel re-exports
+    try {
+      await import(fileUrl + ts);
+    } catch (e) {
+      Log.warn('[WC SSR] Failed to import:', imp, e.message);
     }
   }
 }
