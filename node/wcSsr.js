@@ -34,23 +34,25 @@ async function loadSsrImports(imports) {
       continue;
     }
 
-    let specifiers = new Set();
+    // Detect barrel-style re-exports only (not local imports for own use):
+    let barrelSpecifiers = new Set();
     let match;
 
-    // 1) Any `from './...'` — handles export *, export {}, import X, multi-line imports
-    let fromPattern = /from\s+['"](\.[^'"]+)['"]/g;
-    while ((match = fromPattern.exec(source)) !== null) {
-      specifiers.add(match[1]);
+    // 1) `export ... from './path'` — re-export patterns
+    let exportFromRe = /^\s*export\s+.*?from\s+['"](\.[^'"]+)['"]/gm;
+    while ((match = exportFromRe.exec(source)) !== null) {
+      barrelSpecifiers.add(match[1]);
     }
 
-    // 2) Side-effect: `import './...'` (no `from` keyword)
-    let sideEffectPattern = /^\s*import\s+['"](\.[^'"]+)['"]/gm;
-    while ((match = sideEffectPattern.exec(source)) !== null) {
-      specifiers.add(match[1]);
+    // 2) Side-effect: `import './path'` (no binding, no `from` keyword)
+    let sideEffectRe = /^\s*import\s+['"](\.[^'"]+)['"]/gm;
+    while ((match = sideEffectRe.exec(source)) !== null) {
+      barrelSpecifiers.add(match[1]);
     }
 
-    if (specifiers.size) {
-      for (let specifier of specifiers) {
+    if (barrelSpecifiers.size) {
+      // Barrel file — import each inner module individually with cache-busting
+      for (let specifier of barrelSpecifiers) {
         let resolved = new URL(specifier, fileUrl).href;
         try {
           await import(resolved + ts);
@@ -59,6 +61,7 @@ async function loadSsrImports(imports) {
         }
       }
     } else {
+      // Single component file — import directly with cache-busting
       try {
         await import(fileUrl + ts);
       } catch (e) {
