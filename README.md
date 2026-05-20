@@ -16,7 +16,7 @@ Build static pages, server-rendered routes, API-like responses, CSS, SVG, feeds,
 - **One mental model for the whole web surface** — pages, styles, SVG, API responses, feeds, and generated files are just ESM modules with imports, functions, loops, data, and tests.
 - **Dynamic output without framework gravity** — use full JavaScript at build time, request time, or both; choose SSG, SSR, dynamic server routes, or plain static assets per project.
 - **Fast installs, fast builds, fast CI** — a small dependency graph and esbuild-powered pipeline keep local development and deployment pipelines lightweight.
-- **Platform-native UI** — SSR and hydrate W3C Custom Elements with Symbiote.js instead of coupling every component to a framework-specific runtime.
+- **Platform-native UI** — SSR and hydrate W3C Custom Elements with [Symbiote.js](https://github.com/symbiotejs/symbiote.js) instead of coupling every component to a framework-specific runtime.
 - **Deploy anywhere** — ship a static `dist/` folder, run the JSDA server, or mix both; no vendor platform is required.
 
 ## What is JSDA?
@@ -24,8 +24,6 @@ Build static pages, server-rendered routes, API-like responses, CSS, SVG, feeds,
 **JSDA** (JavaScript Distributed Assets) treats JavaScript ESM modules as text-based web asset generation endpoints — providing PHP-like templating with modern JavaScript and ESM modules.
 
 > **Learn more**: https://github.com/rnd-pro/jsda
-
-**[Symbiote.js](https://github.com/symbiotejs/symbiote.js)** — lightweight Web Components framework used by JSDA-Kit for isomorphic UI: same components render via SSR on the server and hydrate on the client.
 
 ## Key Features
 
