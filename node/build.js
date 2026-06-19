@@ -22,14 +22,39 @@ function fmtPath(path) {
 }
 
 /**
- * @param {String} path
+ * @param {String} filePath
+ * @returns {String}
+ */
+function fileNameFromPath(filePath) {
+  return filePath.split(/[\\/]/).pop() || '';
+}
+
+/**
+ * @param {String} filePath
+ * @returns {Boolean}
+ */
+function isIndexEntry(filePath) {
+  let fileName = fileNameFromPath(filePath);
+  return fileName.startsWith('index.') && fileName.endsWith('.js');
+}
+
+/**
+ * @param {String} filePath
+ * @returns {Boolean}
+ */
+function isIndexJsBundle(filePath) {
+  return fileNameFromPath(filePath) === 'index.js';
+}
+
+/**
+ * @param {String} filePath
  * @returns {Promise<String | { content: String, ssrImports: String[] } | null>}
  */
-async function impWa(path) {
+async function impWa(filePath) {
   let result = null;
-  if (path.includes('/index.js')) {
+  if (isIndexJsBundle(filePath)) {
     let buildResult = await esbuild.build({
-      entryPoints: [path],
+      entryPoints: [filePath],
       format: 'esm',
       bundle: true,
       minify: true,
@@ -42,7 +67,7 @@ async function impWa(path) {
     result = buildResult.outputFiles[0].text;
   } else {
     let processRoot = process.cwd();
-    let mdlUrl = 'file://' + processRoot + '/' + path;
+    let mdlUrl = 'file://' + processRoot + '/' + filePath;
     try {
       let mdl = await import(mdlUrl);
       let str = mdl.default;
@@ -79,8 +104,8 @@ async function processIndex(indexPath) {
   }
 
   let outPath = fmtPath(indexPath);
-  if (!outPath.includes('index.js')) {
-    outPath = outPath.replace('.js', '');
+  if (!isIndexJsBundle(indexPath) && outPath.endsWith('.js')) {
+    outPath = outPath.slice(0, -'.js'.length);
   }
   outPath = outPath.replace(fmtPath(CFG.static.sourceDir), fmtPath(CFG.static.outputDir));
 
@@ -106,7 +131,7 @@ async function processIndex(indexPath) {
 }
 
 export async function build() {
-  let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []);
+  let indexArr = findFiles(CFG.static.sourceDir, ['index.', '.js'], []).filter(isIndexEntry);
   Log.info('Processing JSDA entries:', indexArr);
   await Promise.all(indexArr.map(processIndex));
   await generateSitemap();

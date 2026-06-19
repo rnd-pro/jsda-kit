@@ -16,23 +16,24 @@ const cache = Object.create(null);
 const encPart = '; charset=utf-8';
 
 /**
- * 
- * @param {String} url 
- * @returns {Boolean}
+ * @param {String} url
+ * @returns {String}
  */
-function isJsda(url) {
-  let result = false;
-  let fileName = url
+function getFileName(url) {
+  return url
     .split('/')
     .pop()
     .split('?')[0]
     .toLowerCase();
-  Object.keys(MIME_TYPES).forEach((ext) => {
-    if (fileName.includes(`.${ext}.js`)) {
-      result = true;
-    }
-  });
-  return result;
+}
+
+/**
+ * @param {String} url 
+ * @returns {Boolean}
+ */
+function isJsda(url) {
+  let fileName = getFileName(url);
+  return Object.keys(MIME_TYPES).some((ext) => fileName.endsWith(`.${ext}.js`));
 }
 
 /**
@@ -41,7 +42,11 @@ function isJsda(url) {
  * @returns {String} - file extension
  */
 function getExt(url) {
-  return url.split('/').pop().split('.js')[0].split('.').pop().toLowerCase();
+  let fileName = getFileName(url);
+  if (isJsda(url)) {
+    fileName = fileName.slice(0, -'.js'.length);
+  }
+  return fileName.split('.').pop().toLowerCase();
 }
 
 /**

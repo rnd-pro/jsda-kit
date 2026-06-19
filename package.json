@@ -1,6 +1,6 @@
 {
   "name": "jsda-kit",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "access": "public",
   "description": "JSDA Toolkit for modern Web",
   "keywords": [
@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@minify-html/node": "^0.16.4",
-    "@symbiotejs/symbiote": "^3.7.0",
+    "@symbiotejs/symbiote": "^3.8.2",
     "esbuild": "^0.25.9",
     "esbuild-minify-templates": "^0.11.0",
     "highlight.js": "^11.11.1",
