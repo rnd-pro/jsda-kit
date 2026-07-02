@@ -1,5 +1,5 @@
 import fs from 'fs';
-import CFG, { getSsrEnabled, getSsrImports, getSsrNonce } from '../cfg/CFG.js';
+import CFG, { getSsrEnabled, getSsrImports, getSsrNonce, isMinifyEnabled } from '../cfg/CFG.js';
 import { checkDirExists } from './checkDirExists.js';
 import { findFiles } from './findFiles.js';
 import esbuild from 'esbuild';
@@ -53,16 +53,18 @@ function isIndexJsBundle(filePath) {
 async function impWa(filePath) {
   let result = null;
   if (isIndexJsBundle(filePath)) {
+    let minify = isMinifyEnabled(CFG, 'js', filePath);
     let buildResult = await esbuild.build({
       entryPoints: [filePath],
+      outfile: fileNameFromPath(filePath),
       format: 'esm',
       bundle: true,
-      minify: true,
+      minify,
       sourcemap: false,
       external: getExternalDeps(),
       target: 'esnext',
       write: false,
-      plugins: [minifyTemplates({ taggedOnly: true })],
+      plugins: minify ? [minifyTemplates({ taggedOnly: true })] : [],
     });
     result = buildResult.outputFiles[0].text;
   } else {
@@ -116,12 +118,12 @@ async function processIndex(indexPath) {
       let ssrOptions = nonce ? { nonce } : {};
       indexSrc = await wcSsr(indexSrc, { imports, ssrOptions });
     }
-    if (CFG.minify.html) {
+    if (isMinifyEnabled(CFG, 'html', [indexPath, outPath])) {
       indexSrc = htmlMin(indexSrc).toString();
     }
   }
 
-  if (outPath.includes('/index.css')) {
+  if (outPath.includes('/index.css') && isMinifyEnabled(CFG, 'css', [indexPath, outPath])) {
     indexSrc = cssMin(indexSrc);
   }
 

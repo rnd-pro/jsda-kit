@@ -73,6 +73,15 @@ const defaults = {
     preload: true,
   },
 
+  markdown: {
+    externalLinks: {
+      enabled: true,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      exclude: [],
+    },
+  },
+
   sitemap: {
     enabled: false,
     baseUrl: '',
@@ -149,5 +158,32 @@ function getSitemapConfig(c) {
   };
 }
 
-export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports, getSsrNonce, getSitemapEnabled, getSitemapConfig };
+/**
+ * @param {JSDA_CFG} c
+ * @returns {Required<JSDA_CFG['markdown']>['externalLinks']}
+ */
+function getMarkdownExternalLinksConfig(c) {
+  let d = defaults.markdown.externalLinks;
+  let externalLinks = c.markdown?.externalLinks || {};
+  return {
+    enabled: externalLinks.enabled ?? d.enabled,
+    target: externalLinks.target ?? d.target,
+    rel: externalLinks.rel ?? d.rel,
+    exclude: externalLinks.exclude || d.exclude,
+  };
+}
+
+/**
+ * @param {JSDA_CFG} c
+ * @param {'js' | 'css' | 'html' | 'svg'} type
+ * @param {String | String[]} [filePaths]
+ * @returns {boolean}
+ */
+function isMinifyEnabled(c, type, filePaths = '') {
+  if (!c.minify?.[type]) return false;
+  let paths = Array.isArray(filePaths) ? filePaths : [filePaths];
+  return !(c.minify.exclude || []).some((pattern) => paths.some((filePath) => filePath.includes(pattern)));
+}
+
+export { cfg, defaults, deepMerge, getSsrEnabled, getSsrImports, getSsrNonce, getSitemapEnabled, getSitemapConfig, getMarkdownExternalLinksConfig, isMinifyEnabled };
 export default cfg;

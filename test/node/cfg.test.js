@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { deepMerge } from '../../cfg/CFG.js';
+import { deepMerge, getMarkdownExternalLinksConfig, isMinifyEnabled } from '../../cfg/CFG.js';
 
 describe('deepMerge', () => {
   it('should merge flat objects', () => {
@@ -61,5 +61,78 @@ describe('CFG defaults', () => {
     assert.ok(keys.includes('minify'));
     assert.ok(keys.includes('bundle'));
     assert.ok(keys.includes('importmap'));
+    assert.ok(keys.includes('markdown'));
+  });
+});
+
+describe('getMarkdownExternalLinksConfig', () => {
+  it('should return markdown external link defaults', () => {
+    let cfg = getMarkdownExternalLinksConfig({});
+    assert.deepEqual(cfg, {
+      enabled: true,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      exclude: [],
+    });
+  });
+
+  it('should allow disabling external link attributes globally', () => {
+    let cfg = getMarkdownExternalLinksConfig({
+      markdown: {
+        externalLinks: {
+          enabled: false,
+        },
+      },
+    });
+    assert.equal(cfg.enabled, false);
+    assert.equal(cfg.target, '_blank');
+    assert.equal(cfg.rel, 'noopener noreferrer');
+  });
+
+  it('should read target, rel, and exclude overrides', () => {
+    let cfg = getMarkdownExternalLinksConfig({
+      markdown: {
+        externalLinks: {
+          target: '_top',
+          rel: 'external',
+          exclude: ['example.com'],
+        },
+      },
+    });
+    assert.deepEqual(cfg, {
+      enabled: true,
+      target: '_top',
+      rel: 'external',
+      exclude: ['example.com'],
+    });
+  });
+});
+
+describe('isMinifyEnabled', () => {
+  it('should match minify exclude entries as path patterns', () => {
+    let cfg = {
+      minify: {
+        js: true,
+        css: true,
+        html: true,
+        svg: true,
+        exclude: ['vendor/'],
+      },
+    };
+    assert.equal(isMinifyEnabled(cfg, 'js', './src/vendor/index.js'), false);
+    assert.equal(isMinifyEnabled(cfg, 'js', './src/app/index.js'), true);
+  });
+
+  it('should match minify exclude patterns against any provided path', () => {
+    let cfg = {
+      minify: {
+        js: true,
+        css: true,
+        html: true,
+        svg: true,
+        exclude: ['dist/admin/'],
+      },
+    };
+    assert.equal(isMinifyEnabled(cfg, 'html', ['./src/admin/index.html.js', './dist/admin/index.html']), false);
   });
 });

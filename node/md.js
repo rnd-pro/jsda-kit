@@ -1,4 +1,5 @@
 import fs from 'fs';
+import CFG, { getMarkdownExternalLinksConfig } from '../cfg/CFG.js';
 import { md2html } from '../iso/md2html.js';
 
 /**
@@ -6,5 +7,8 @@ import { md2html } from '../iso/md2html.js';
  * @param {String} path path to markdown file
  */
 export async function md(path) {
-  return path.startsWith('https') ? md2html(await (await fetch(path)).text()) : md2html(fs.readFileSync(path).toString());
+  let mdTxt = path.startsWith('http') ? await (await fetch(path)).text() : fs.readFileSync(path).toString();
+  return md2html(mdTxt, {
+    externalLinks: getMarkdownExternalLinksConfig(CFG),
+  });
 }

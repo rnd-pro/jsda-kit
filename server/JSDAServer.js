@@ -1,6 +1,6 @@
 import http from 'http';
 import fs from 'fs';
-import CFG, { getSsrImports, getSsrNonce } from '../cfg/CFG.js';
+import CFG, { getSsrImports, getSsrNonce, isMinifyEnabled } from '../cfg/CFG.js';
 import MIME_TYPES from './MIME_TYPES.js';
 import { jsBuild, cssBuild } from './build-asset.js';
 import { htmlMin } from '../node/htmlMin.js';
@@ -71,7 +71,7 @@ async function processHtmlPipeline(jsdaMdl, routeKey, reqUrl, reqHeaders) {
   let nonce = getSsrNonce(CFG);
   let ssrOptions = nonce ? { nonce } : {};
   html = await wcSsr(html, { imports, ssrOptions });
-  return CFG.minify.html ? htmlMin(html) : html;
+  return isMinifyEnabled(CFG, 'html', [reqUrl, routeKey]) ? htmlMin(html) : html;
 }
 
 /**
@@ -167,7 +167,7 @@ export function createServer(options = {}) {
         } else {
           let fileTxt = jsdaMdl.default;
           if (typeof fileTxt === 'string') {
-            if (mimeType === 'text/css' && CFG.minify.css) {
+            if (mimeType === 'text/css' && isMinifyEnabled(CFG, 'css', [req.url, filePath])) {
               fileTxt = cssMin(fileTxt);
             }
             respond(mimeType, fileTxt);
@@ -187,10 +187,10 @@ export function createServer(options = {}) {
         let fileTxt = fs.readFileSync(filePath).toString();
         let fileExt = getExt(req.url);
         let mimeType = MIME_TYPES[fileExt];
-        if (mimeType === 'text/html' && CFG.minify.html) {
+        if (mimeType === 'text/html' && isMinifyEnabled(CFG, 'html', [req.url, filePath])) {
           fileTxt = htmlMin(fileTxt);
         }
-        if (mimeType === 'text/css' && CFG.minify.css) {
+        if (mimeType === 'text/css' && isMinifyEnabled(CFG, 'css', [req.url, filePath])) {
           fileTxt = cssMin(fileTxt);
         }
         respond(mimeType, fileTxt);

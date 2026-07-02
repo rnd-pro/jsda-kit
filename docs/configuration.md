@@ -48,6 +48,15 @@ export default {
     polyfills: false,
     preload: true,
   },
+
+  markdown: {
+    externalLinks: {
+      enabled: true,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      exclude: [],
+    },
+  },
 };
 ```
 
@@ -93,7 +102,7 @@ Individual JSDA endpoints can also export `ssrImports` for page-specific compone
 | `css` | `boolean` | `true` | Minify CSS output |
 | `html` | `boolean` | `true` | Minify HTML output |
 | `svg` | `boolean` | `true` | Minify SVG output |
-| `exclude` | `string[]` | `[]` | File paths to exclude from minification |
+| `exclude` | `string[]` | `[]` | File path substrings to exclude from minification |
 
 ### `bundle`
 
@@ -111,6 +120,17 @@ Individual JSDA endpoints can also export `ssrImports` for page-specific compone
 | `srcSchema` | `string` | `'https://cdn.jsdelivr.net/npm/{pkg-name}/+esm'` | URL template for CDN imports |
 | `polyfills` | `boolean` | `false` | Include import map polyfill script |
 | `preload` | `boolean` | `true` | Add `<link rel="modulepreload">` for mapped modules |
+
+### `markdown`
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `externalLinks.enabled` | `boolean` | `true` | Add configured attributes to external Markdown links |
+| `externalLinks.target` | `string` | `'_blank'` | Target attribute for external links |
+| `externalLinks.rel` | `string` | `'noopener noreferrer'` | Rel attribute for external links |
+| `externalLinks.exclude` | `string[]` | `[]` | URL substrings to exclude from external-link attributes |
+
+External links are links whose `href` starts with `http://`, `https://`, or `//`.
 
 ### `log`
 

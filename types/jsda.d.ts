@@ -49,6 +49,19 @@ declare type JSDA_CFG = {
     preload: boolean;
   }>;
 
+  markdown?: Partial<{
+    externalLinks: Partial<{
+      /** Add target/rel to absolute HTTP(S) markdown links */
+      enabled: boolean;
+      /** Link target for external links, e.g. '_blank' */
+      target: string;
+      /** Link rel for external links, e.g. 'noopener noreferrer' */
+      rel: string;
+      /** URL substrings to exclude from external-link attributes */
+      exclude: string[];
+    }>;
+  }>;
+
   /** Sitemap generation — `true` enables with defaults, or pass object for full control */
   sitemap?: boolean | Partial<{
     enabled: boolean;
@@ -65,6 +78,15 @@ declare type JSDA_CFG = {
   }>;
 
 };
+
+declare type JSDA_MD2HTML_OPTIONS = Partial<{
+  externalLinks: Partial<{
+    enabled: boolean;
+    target: string;
+    rel: string;
+    exclude: string[];
+  }>;
+}>;
 
 declare type cli_commands = {
   ssg: void;
