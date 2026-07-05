@@ -33,7 +33,7 @@ export default /*html*/ `
 
 The JSDA-Kit build pipeline:
 
-1. Finds all `index.*.js` files in `sourceDir`
+1. Finds JSDA entry files in `sourceDir` using `static.entryPatterns`
 2. Imports each module and reads its default export
 3. Applies minification based on the output type
 4. Writes the result to `outputDir` (stripping the `.js` extension)

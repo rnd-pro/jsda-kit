@@ -4,7 +4,7 @@ JSDA-Kit's SSG pipeline converts ESM modules into static assets.
 
 ## How It Works
 
-1. Scans `sourceDir` for files matching `index.*.js` pattern
+1. Scans `sourceDir` for files matching configured `entryPatterns`
 2. Imports each module and reads its default export (string or function returning string)
 3. Applies SSR (if `ssr: true`) for HTML files containing custom elements
 4. Applies minification based on output type
@@ -20,6 +20,27 @@ src/static/app/index.js   →  dist/app/index.js  (bundled by esbuild)
 ```
 
 Files named `index.js` (without a second extension) are treated as JavaScript bundles and processed by esbuild.
+
+By default, JSDA scans `['index.js', 'index.*.js']`. Add more patterns when you want non-index files to generate output:
+
+```js
+export default {
+  static: {
+    entryPatterns: [
+      'index.js',
+      'index.*.js',
+      '*.html.js',
+      '*.xml.js',
+      '*.pdf.js',
+    ],
+  },
+};
+```
+
+```txt
+src/static/about.html.js -> dist/about.html
+src/static/feed.xml.js   -> dist/feed.xml
+```
 
 ## HTML Page Example
 
@@ -66,7 +87,10 @@ ${pages.map(p => `<url><loc>https://example.com${p}</loc></url>`).join('\n')}
 ```bash
 npx jsda build
 npx jsda build --output=./public
+npx jsda build-pdf
 ```
+
+`build` skips `.pdf.js` entries. Use `build-pdf` to generate regular static output and PDFs.
 
 ## SSG Watcher
 
@@ -74,7 +98,91 @@ For development, the watcher rebuilds on file changes and starts a local static 
 
 ```bash
 npx jsda ssg
+npx jsda ssg-pdf
 ```
+
+`ssg` skips PDFs for fast development builds. `ssg-pdf` watches and rebuilds regular output plus PDF files.
+
+## PDF Generation
+
+PDF entries use the `.pdf.js` extension and are generated with Puppeteer by `jsda build-pdf` and `jsda ssg-pdf`.
+
+```js
+// src/static/reports/annual.pdf.js
+export const pdfOptions = {
+  format: 'A4',
+  margin: {
+    top: '16mm',
+    right: '16mm',
+    bottom: '16mm',
+    left: '16mm',
+  },
+};
+
+export default () => `
+  <!doctype html>
+  <html>
+    <body>
+      <h1>Annual Report</h1>
+    </body>
+  </html>
+`;
+```
+
+Install Puppeteer in projects that generate PDFs:
+
+```bash
+npm install -D puppeteer
+```
+
+PDF defaults live under `static.pdf`:
+
+```js
+export default {
+  static: {
+    pdf: {
+      waitUntil: 'load',
+      outputDir: '',
+      options: {
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '16mm',
+          right: '16mm',
+          bottom: '16mm',
+          left: '16mm',
+        },
+      },
+    },
+  },
+};
+```
+
+When `pdf.outputDir` is set, PDFs are written there instead of `outputDir`. This is useful for committing generated PDFs and letting CI copy them into `dist` without running Puppeteer.
+
+## Static Copy
+
+Use `static.copy` to copy committed files or folders into `outputDir`:
+
+```js
+export default {
+  static: {
+    copy: [
+      { from: './generated/pdf', to: './pdf' },
+      { from: './src/static-files', to: './' },
+    ],
+  },
+};
+```
+
+For zero-config colocated assets, use folders under `sourceDir` whose name starts with `copy-`. The prefix is stripped in the output path:
+
+```txt
+src/static/copy-assets/favicon.ico            -> dist/assets/favicon.ico
+src/static/reports/copy-pdf/annual-report.pdf -> dist/reports/pdf/annual-report.pdf
+```
+
+Files inside `copy-*` folders are copied as raw files and are not processed as JSDA entries.
 
 ## Tagged Template Minification
 
@@ -148,4 +256,3 @@ sitemap: {
 ### `lastmod`
 
 Each `<url>` entry includes a `<lastmod>` date derived from the output file's modification time.
-

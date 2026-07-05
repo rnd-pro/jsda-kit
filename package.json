@@ -1,6 +1,6 @@
 {
   "name": "jsda-kit",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "access": "public",
   "description": "JSDA Toolkit for modern Web",
   "keywords": [
@@ -62,6 +62,14 @@
     "marked": "^16.2.1",
     "marked-highlight": "^2.2.2",
     "@types/node": "^24.3.1"
+  },
+  "peerDependencies": {
+    "puppeteer": ">=22"
+  },
+  "peerDependenciesMeta": {
+    "puppeteer": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

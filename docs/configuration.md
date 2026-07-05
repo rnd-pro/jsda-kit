@@ -19,6 +19,23 @@ export default {
   static: {
     outputDir: './dist',
     sourceDir: './src/static',
+    entryPatterns: ['index.js', 'index.*.js'],
+    copy: [],
+    pdf: {
+      waitUntil: 'load',
+      outputDir: '',
+      launchOptions: {},
+      options: {
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '16mm',
+          right: '16mm',
+          bottom: '16mm',
+          left: '16mm',
+        },
+      },
+    },
   },
 
   ssr: {
@@ -79,7 +96,24 @@ export default {
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `outputDir` | `string` | `'./dist'` | Output directory for SSG build |
-| `sourceDir` | `string` | `'./src/static'` | Source directory to scan for `index.*.js` files |
+| `sourceDir` | `string` | `'./src/static'` | Source directory to scan for SSG entries |
+| `entryPatterns` | `string[]` | `['index.js', 'index.*.js']` | Glob-style JSDA entry patterns |
+| `copy` | `{ from: string, to: string }[]` | `[]` | Static file/folder copy rules; `to` is relative to `outputDir` |
+| `pdf.waitUntil` | `string \| string[]` | `'load'` | Puppeteer `page.setContent()` wait condition for PDF rendering |
+| `pdf.outputDir` | `string` | `''` | Optional alternate destination for generated PDFs |
+| `pdf.launchOptions` | `object` | `{}` | Options passed to `puppeteer.launch()` |
+| `pdf.options` | `object` | `{ format: 'A4', printBackground: true, margin: ... }` | Options passed to Puppeteer `page.pdf()` |
+
+`entryPatterns` supports filename patterns such as `*.html.js` and relative path patterns such as `pages/*.html.js`. Patterns without `/` match filenames at any depth under `sourceDir`.
+
+Folders under `sourceDir` whose name starts with `copy-` are copied to `outputDir` with the prefix stripped:
+
+```txt
+src/static/copy-assets/favicon.ico -> dist/assets/favicon.ico
+src/static/docs/copy-pdf/file.pdf  -> dist/docs/pdf/file.pdf
+```
+
+PDF files are generated only by `jsda build-pdf` and `jsda ssg-pdf`. Plain `jsda build` and `jsda ssg` skip `.pdf.js` entries.
 
 ### `ssr`
 

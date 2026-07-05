@@ -43,6 +43,7 @@ Build static pages, server-rendered routes, API-like responses, CSS, SVG, feeds,
 
 ### Build & Bundling
 - **Static Site Generation** — JAMStack-ready SSG; source folder structure maps directly to output (`src/static/about/index.html.js → dist/about/index.html`), deploy the `dist/` folder to any static hosting as-is
+- **Configurable SSG entries and PDFs** — add non-index entry patterns, generate `.pdf.js` files with Puppeteer via `build-pdf`/`ssg-pdf`, and copy committed static artifacts into output
 - **esbuild-powered** — JS/CSS bundling with tree-shaking, ESM output; works both at build time and on-the-fly during `serve`
 - **Tagged template minification** — `html` and `css` tagged template literals minified automatically inside bundles; untagged templates left untouched
 - **Asset minification** — HTML (via `@minify-html/node`), CSS, and SVG minified by default with per-file excludes
@@ -162,7 +163,9 @@ jsda <command> [options]
 Commands:
   serve            Start the development server
   build            Build static assets for production
+  build-pdf        Build static assets and PDF files for production
   ssg              Start SSG watcher (dev mode)
+  ssg-pdf          Start SSG watcher with PDF generation enabled
   scaffold         Scaffold a new JSDA project
 
 Options:

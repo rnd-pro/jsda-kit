@@ -23,7 +23,7 @@ jsda serve --port=8080
 
 ### `build`
 
-Build static assets for production.
+Build static assets for production. PDF entries are skipped.
 
 ```bash
 jsda build
@@ -34,12 +34,37 @@ jsda build --output=./public
 |--------|-------------|
 | `--output=<dir>` | Output directory (default: from config or ./dist) |
 
+### `build-pdf`
+
+Build static assets and PDF entries for production.
+
+```bash
+jsda build-pdf
+jsda build-pdf --output=./public
+```
+
+PDF rendering requires `puppeteer` installed in the project.
+
+| Option | Description |
+|--------|-------------|
+| `--output=<dir>` | Output directory for regular static outputs. PDFs use `static.pdf.outputDir` when configured. |
+
 ### `ssg`
 
-Start SSG watcher for development. Watches `sourceDir` for changes and rebuilds automatically.
+Start SSG watcher for development. Watches `sourceDir` for changes and rebuilds automatically. PDF entries are skipped.
 
 ```bash
 jsda ssg
+jsda ssg --output=./public
+```
+
+### `ssg-pdf`
+
+Start SSG watcher with PDF generation enabled.
+
+```bash
+jsda ssg-pdf
+jsda ssg-pdf --output=./public
 ```
 
 ### `scaffold`

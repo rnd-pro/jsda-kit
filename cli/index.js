@@ -36,7 +36,9 @@ Usage: jsda <command> [options]
 Commands:
   serve            Start the development server
   build            Build static assets for production
+  build-pdf        Build static assets and PDF files for production
   ssg              Start SSG watcher (dev mode)
+  ssg-pdf          Start SSG watcher with PDF generation enabled
   scaffold         Scaffold a new JSDA project
 
 Options:
@@ -48,13 +50,25 @@ Options:
 Examples:
   jsda serve --port=8080
   jsda build --output=./public
+  jsda build-pdf --output=./public
   jsda scaffold
 `.trim();
 
 /** @type {Record<keyof cli_commands, (flags: Object) => Promise<void>>} */
 const CMD_MAP = {
 
-  ssg: async () => {
+  ssg: async (flags) => {
+    if (flags.output) {
+      process.env.JSDA_OUTPUT = String(flags.output);
+    }
+    await import('../node/watch.js');
+  },
+
+  'ssg-pdf': async (flags) => {
+    process.env.JSDA_PDF = '1';
+    if (flags.output) {
+      process.env.JSDA_OUTPUT = String(flags.output);
+    }
     await import('../node/watch.js');
   },
 
@@ -66,6 +80,14 @@ const CMD_MAP = {
   },
 
   build: async (flags) => {
+    if (flags.output) {
+      process.env.JSDA_OUTPUT = String(flags.output);
+    }
+    await import('../node/ci.js');
+  },
+
+  'build-pdf': async (flags) => {
+    process.env.JSDA_PDF = '1';
     if (flags.output) {
       process.env.JSDA_OUTPUT = String(flags.output);
     }

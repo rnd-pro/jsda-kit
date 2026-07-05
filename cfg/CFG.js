@@ -42,6 +42,23 @@ const defaults = {
     outputDir: './dist',
     sourceDir: './src/static',
     port: 3001,
+    entryPatterns: ['index.js', 'index.*.js'],
+    copy: [],
+    pdf: {
+      waitUntil: 'load',
+      outputDir: '',
+      launchOptions: {},
+      options: {
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '16mm',
+          right: '16mm',
+          bottom: '16mm',
+          left: '16mm',
+        },
+      },
+    },
   },
 
   minify: {
@@ -102,6 +119,10 @@ try {
   cfg = deepMerge(defaults, cfgObj);
 } catch {
   // project.cfg.js not found — using defaults (zero-config mode)
+}
+
+if (process.env.JSDA_OUTPUT) {
+  cfg.static.outputDir = process.env.JSDA_OUTPUT;
 }
 
 /**

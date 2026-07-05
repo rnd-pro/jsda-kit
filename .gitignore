@@ -16,6 +16,7 @@ TMP
 build
 dist
 env
+feature-planning/
 test-results
 .last-run.json
 .project-graph-cache.json

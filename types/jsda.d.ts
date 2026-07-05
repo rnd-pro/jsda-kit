@@ -16,6 +16,24 @@ declare type JSDA_CFG = {
     outputDir: string;
     sourceDir: string;
     port: number;
+    /** Glob-style JSDA entry file patterns. Patterns without "/" match filenames in any sourceDir folder. */
+    entryPatterns: string[];
+    /** Static copy rules. `to` is relative to outputDir. */
+    copy: Array<{
+      from: string;
+      to: string;
+    }>;
+    /** PDF generation settings used by `jsda build-pdf` and `jsda ssg-pdf`. */
+    pdf: Partial<{
+      /** Puppeteer page.setContent waitUntil option. */
+      waitUntil: string | string[];
+      /** Alternate destination for generated PDFs. Empty means outputDir. */
+      outputDir: string;
+      /** Options passed to puppeteer.launch(). */
+      launchOptions: Record<string, unknown>;
+      /** Default options passed to page.pdf(), including margin. */
+      options: Record<string, unknown>;
+    }>;
   }>;
 
   minify?: Partial<{
@@ -90,7 +108,9 @@ declare type JSDA_MD2HTML_OPTIONS = Partial<{
 
 declare type cli_commands = {
   ssg: void;
+  'ssg-pdf': void;
   serve: void;
   scaffold: void;
   build: void;
+  'build-pdf': void;
 };
