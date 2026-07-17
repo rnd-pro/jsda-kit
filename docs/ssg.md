@@ -42,6 +42,33 @@ src/static/about.html.js -> dist/about.html
 src/static/feed.xml.js   -> dist/feed.xml
 ```
 
+## Excluding Source Files and Folders
+
+Use `static.exclude` to keep matching source files or whole folders out of SSG processing:
+
+```js
+export default {
+  static: {
+    exclude: [
+      'drafts',
+      'pages/private/**',
+      '**/*.draft.html.js',
+    ],
+  },
+};
+```
+
+Patterns are relative to `sourceDir`. A pattern without `/` matches a file or folder name at any depth. A path pattern matches from the source root, and a matching folder excludes everything below it.
+
+For zero-config exclusion, prefix a folder name with `exclude-`:
+
+```txt
+src/static/exclude-drafts/index.html.js         # skipped
+src/static/pages/exclude-preview/index.html.js  # skipped
+```
+
+Excluded paths are not rendered and are not copied from `copy-*` folders. Explicit `static.copy` rules are not filtered.
+
 ## HTML Page Example
 
 ```js

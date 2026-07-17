@@ -18,6 +18,8 @@ declare type JSDA_CFG = {
     port: number;
     /** Glob-style JSDA entry file patterns. Patterns without "/" match filenames in any sourceDir folder. */
     entryPatterns: string[];
+    /** Glob-style source-relative paths to exclude from static processing. */
+    exclude: string[];
     /** Static copy rules. `to` is relative to outputDir. */
     copy: Array<{
       from: string;

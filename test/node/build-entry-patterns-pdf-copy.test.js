@@ -38,6 +38,7 @@ function snapshotCfg() {
     static: {
       ...CFG.static,
       entryPatterns: [...CFG.static.entryPatterns],
+      exclude: [...CFG.static.exclude],
       copy: CFG.static.copy.map((rule) => ({ ...rule })),
       pdf: {
         ...CFG.static.pdf,
@@ -120,6 +121,64 @@ describe('SSG entry patterns, PDFs, and static copy', () => {
     assert.equal(readFixture(path.join(distDir, 'assets/index.html.js')), 'raw jsda-looking file');
     assert.equal(fs.existsSync(path.join(distDir, 'assets/index.html')), false);
     assert.equal(readFixture(path.join(distDir, 'docs/pdf/report.pdf')), 'pdf bytes');
+  });
+
+  it('skips entries matching static.exclude file and folder patterns', async () => {
+    let srcDir = path.join(tmpRoot, 'src/static');
+    let distDir = path.join(tmpRoot, 'dist');
+    writeFixture(path.join(srcDir, 'index.html.js'), `export default '<main>Index</main>';\n`);
+    writeFixture(path.join(srcDir, 'drafts/index.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'pages/private/index.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'root.draft.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'pages/article.draft.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'pages/skip.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'copy-assets/public.txt'), 'public');
+    writeFixture(path.join(srcDir, 'copy-assets/private.txt'), 'private');
+
+    CFG.static.sourceDir = relPath(srcDir);
+    CFG.static.outputDir = relPath(distDir);
+    CFG.static.entryPatterns = ['*.html.js'];
+    CFG.static.exclude = [
+      'drafts',
+      'pages/private/**',
+      '**/*.draft.html.js',
+      'skip.html.js',
+      'private.txt',
+    ];
+
+    await build();
+
+    assert.equal(readFixture(path.join(distDir, 'index.html')), '<main>Index</main>');
+    assert.equal(fs.existsSync(path.join(distDir, 'drafts/index.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'pages/private/index.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'root.draft.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'pages/article.draft.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'pages/skip.html')), false);
+    assert.equal(readFixture(path.join(distDir, 'assets/public.txt')), 'public');
+    assert.equal(fs.existsSync(path.join(distDir, 'assets/private.txt')), false);
+  });
+
+  it('skips exclude-* folders without configuration', async () => {
+    let srcDir = path.join(tmpRoot, 'src/static');
+    let distDir = path.join(tmpRoot, 'dist');
+    writeFixture(path.join(srcDir, 'index.html.js'), `export default '<main>Index</main>';\n`);
+    writeFixture(path.join(srcDir, 'exclude-drafts/index.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'pages/exclude-preview/index.html.js'), 'this is intentionally invalid JavaScript');
+    writeFixture(path.join(srcDir, 'copy-assets/public.txt'), 'public');
+    writeFixture(path.join(srcDir, 'copy-assets/exclude-private/secret.txt'), 'secret');
+
+    CFG.static.sourceDir = relPath(srcDir);
+    CFG.static.outputDir = relPath(distDir);
+    CFG.static.entryPatterns = ['*.html.js'];
+    CFG.static.exclude = [];
+
+    await build();
+
+    assert.equal(readFixture(path.join(distDir, 'index.html')), '<main>Index</main>');
+    assert.equal(readFixture(path.join(distDir, 'assets/public.txt')), 'public');
+    assert.equal(fs.existsSync(path.join(distDir, 'exclude-drafts/index.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'pages/exclude-preview/index.html')), false);
+    assert.equal(fs.existsSync(path.join(distDir, 'assets/exclude-private/secret.txt')), false);
   });
 
   it('copies explicit static copy rules', async () => {

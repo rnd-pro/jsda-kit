@@ -72,7 +72,7 @@ describe('scaffold', () => {
 
   it('should create static pages', () => {
     assert.ok(fs.existsSync(path.join(tmpDir, 'src/static-pages/index.html.js')));
-    assert.ok(fs.existsSync(path.join(tmpDir, 'src/static-pages/robots.txt')));
+    assert.ok(fs.existsSync(path.join(tmpDir, 'src/static-pages/robots.txt.js')));
   });
 
   it('should create UI components', () => {

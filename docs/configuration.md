@@ -20,6 +20,7 @@ export default {
     outputDir: './dist',
     sourceDir: './src/static',
     entryPatterns: ['index.js', 'index.*.js'],
+    exclude: [],
     copy: [],
     pdf: {
       waitUntil: 'load',
@@ -98,6 +99,7 @@ export default {
 | `outputDir` | `string` | `'./dist'` | Output directory for SSG build |
 | `sourceDir` | `string` | `'./src/static'` | Source directory to scan for SSG entries |
 | `entryPatterns` | `string[]` | `['index.js', 'index.*.js']` | Glob-style JSDA entry patterns |
+| `exclude` | `string[]` | `[]` | Glob-style source paths to skip during static processing |
 | `copy` | `{ from: string, to: string }[]` | `[]` | Static file/folder copy rules; `to` is relative to `outputDir` |
 | `pdf.waitUntil` | `string \| string[]` | `'load'` | Puppeteer `page.setContent()` wait condition for PDF rendering |
 | `pdf.outputDir` | `string` | `''` | Optional alternate destination for generated PDFs |
@@ -105,6 +107,23 @@ export default {
 | `pdf.options` | `object` | `{ format: 'A4', printBackground: true, margin: ... }` | Options passed to Puppeteer `page.pdf()` |
 
 `entryPatterns` supports filename patterns such as `*.html.js` and relative path patterns such as `pages/*.html.js`. Patterns without `/` match filenames at any depth under `sourceDir`.
+
+`exclude` patterns are relative to `sourceDir`. Patterns without `/` match a file or folder name at any depth; path patterns match from the source root. Excluding a folder also excludes its descendants:
+
+```js
+static: {
+  exclude: ['drafts', 'pages/private/**', '**/*.draft.html.js'],
+}
+```
+
+For zero-config exclusion, prefix any folder name with `exclude-`. Such folders are skipped wherever they occur under `sourceDir`:
+
+```txt
+src/static/exclude-drafts/index.html.js         # skipped
+src/static/pages/exclude-preview/index.html.js  # skipped
+```
+
+Exclusions also apply to files discovered in zero-config `copy-*` folders. Explicit `static.copy` rules remain explicit and are not filtered by `static.exclude`.
 
 Folders under `sourceDir` whose name starts with `copy-` are copied to `outputDir` with the prefix stripped:
 

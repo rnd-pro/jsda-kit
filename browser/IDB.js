@@ -5,7 +5,7 @@ const UPD_EVENT_PREFIX = `symbiote-idb-update_`;
 
 export class DbInstance {
 
-  /** @type {Object<String, () => void>} */
+  /** @type {Record<string, Set<(value: any) => void>>} */
   #subscriptionsMap = {};
 
   /** @type {(e: StorageEvent) => void} */
@@ -88,7 +88,7 @@ export class DbInstance {
   
     this.#updateHandler = (/** @type {StorageEvent} */ e) => {
       if (e.key === this.name && this.#subscriptionsMap[e.newValue]) {
-        /** @type {Set<Function>} */
+        /** @type {Set<(value: any) => void>} */
         let set = this.#subscriptionsMap[e.newValue];
         set.forEach(async (callback) => {
           callback(await this.read(e.newValue));
@@ -253,7 +253,7 @@ export class DbInstance {
     if (!this.#subscriptionsMap[key]) {
       this.#subscriptionsMap[key] = new Set();
     }
-    /** @type {Set} */
+    /** @type {Set<(value: any) => void>} */
     let set = this.#subscriptionsMap[key];
     set.add(callback);
     return {

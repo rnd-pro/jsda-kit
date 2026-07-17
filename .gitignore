@@ -12,7 +12,6 @@
 /npm-debug.log
 
 ## dev
-TMP
 build
 dist
 env
@@ -20,6 +19,10 @@ feature-planning/
 test-results
 .last-run.json
 .project-graph-cache.json
+
+## TMP
+TMP
+*.ignore.*
 
 ## Cloud Images Toolkit
 cit/cit-store/

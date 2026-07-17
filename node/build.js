@@ -45,8 +45,13 @@ function globToRegExp(pattern) {
     let char = pattern[i];
     if (char === '*') {
       if (pattern[i + 1] === '*') {
-        result += '.*';
-        i++;
+        if (pattern[i + 2] === '/') {
+          result += '(?:.*/)?';
+          i += 2;
+        } else {
+          result += '.*';
+          i++;
+        }
       } else {
         result += '[^/]*';
       }
@@ -70,6 +75,61 @@ function relativeSourcePath(filePath) {
     path.resolve(String(CFG.static.sourceDir)),
     path.resolve(String(filePath)),
   ).split(path.sep).join('/');
+}
+
+/**
+ * @param {String} pattern
+ * @returns {String}
+ */
+function normalizeStaticPattern(pattern) {
+  return String(pattern)
+    .replaceAll('\\', '/')
+    .replace(/^\.\//, '')
+    .replace(/^\/+|\/+$/g, '');
+}
+
+/**
+ * @param {String} relPath
+ * @param {String} pattern
+ * @returns {Boolean}
+ */
+function matchesStaticExcludePattern(relPath, pattern) {
+  let normalizedPattern = normalizeStaticPattern(pattern);
+  if (!normalizedPattern) return false;
+
+  let pathParts = relPath.split('/');
+  let patternRegex = globToRegExp(normalizedPattern);
+  if (!normalizedPattern.includes('/')) {
+    return pathParts.some((part) => patternRegex.test(part));
+  }
+
+  for (let i = 1; i <= pathParts.length; i++) {
+    let candidate = pathParts.slice(0, i).join('/');
+    if (patternRegex.test(candidate) || patternRegex.test(candidate + '/')) return true;
+  }
+  return false;
+}
+
+/**
+ * @param {String} filePath
+ * @returns {Boolean}
+ */
+function isInsideExcludeFolder(filePath) {
+  let relPath = relativeSourcePath(filePath);
+  let parts = relPath.split('/');
+  let isDirectory = fs.existsSync(filePath) && fs.lstatSync(filePath).isDirectory();
+  let directoryParts = isDirectory ? parts : parts.slice(0, -1);
+  return directoryParts.some((segment) => segment.startsWith('exclude-'));
+}
+
+/**
+ * @param {String} filePath
+ * @returns {Boolean}
+ */
+function isStaticExcluded(filePath) {
+  if (isInsideExcludeFolder(filePath)) return true;
+  let relPath = relativeSourcePath(filePath);
+  return (CFG.static.exclude || []).some((pattern) => matchesStaticExcludePattern(relPath, pattern));
 }
 
 /**
@@ -163,7 +223,9 @@ function outputType(outPath) {
  * @returns {String[]}
  */
 function getStaticEntries() {
-  return (findFiles(CFG.static.sourceDir, ['.js'], []) || []).filter(isStaticEntry);
+  return (findFiles(CFG.static.sourceDir, ['.js'], []) || [])
+    .filter((filePath) => !isStaticExcluded(filePath))
+    .filter(isStaticEntry);
 }
 
 /**
@@ -327,17 +389,19 @@ async function processEntry(entryPath, writtenPaths, options = {}) {
 /**
  * @param {String} dirPath
  * @param {String[]} collection
+ * @param {(filePath: String) => Boolean} [exclude]
  * @returns {String[]}
  */
-function collectFiles(dirPath, collection = []) {
+function collectFiles(dirPath, collection = [], exclude = () => false) {
   if (!fs.existsSync(dirPath)) return collection;
+  if (exclude(dirPath)) return collection;
   let stat = fs.lstatSync(dirPath);
   if (stat.isFile()) {
     collection.push(dirPath);
     return collection;
   }
   for (let name of fs.readdirSync(dirPath)) {
-    collectFiles(path.join(dirPath, name), collection);
+    collectFiles(path.join(dirPath, name), collection, exclude);
   }
   return collection;
 }
@@ -352,6 +416,7 @@ function collectCopyDirs(dirPath, collection = []) {
   for (let name of fs.readdirSync(dirPath)) {
     let filePath = path.join(dirPath, name);
     if (!fs.lstatSync(filePath).isDirectory()) continue;
+    if (isStaticExcluded(filePath)) continue;
     if (name.startsWith('copy-')) {
       collection.push(filePath);
     } else {
@@ -432,7 +497,11 @@ function copyConfiguredStaticFiles(writtenPaths) {
 function copyConventionStaticFiles(writtenPaths) {
   let copyDirs = collectCopyDirs(String(CFG.static.sourceDir));
   for (let copyDir of copyDirs) {
-    copyPath(copyDir, copyDirOutputBase(copyDir), writtenPaths);
+    let outputBase = copyDirOutputBase(copyDir);
+    for (let filePath of collectFiles(copyDir, [], isStaticExcluded)) {
+      let relPath = path.relative(copyDir, filePath);
+      copyFileToOutput(filePath, path.join(outputBase, relPath), writtenPaths);
+    }
   }
 }
 
@@ -473,6 +542,7 @@ export {
   getOutputPath,
   globToRegExp,
   isInsideCopyFolder,
+  isStaticExcluded,
   isPdfEntry,
   isStaticEntry,
 };

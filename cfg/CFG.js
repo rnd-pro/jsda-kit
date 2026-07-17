@@ -43,6 +43,7 @@ const defaults = {
     sourceDir: './src/static',
     port: 3001,
     entryPatterns: ['index.js', 'index.*.js'],
+    exclude: [],
     copy: [],
     pdf: {
       waitUntil: 'load',
