@@ -42,7 +42,7 @@ export function getImportMap(
       });
     }
     let version = useVersion ? (hostPkg?.dependencies?.[localPkgTop || pkg]?.replace('^', '@') || '') : '';
-    if (!version.startsWith('@')) {
+    if (useVersion && !version.startsWith('@')) {
       version = '@' + version;
     }
     iMap.imports[pkg] = getUrl(pkg.replace(localPkgTop, localPkgTop + version));
