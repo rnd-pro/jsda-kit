@@ -27,7 +27,7 @@ Build static pages, server-rendered routes, API-like responses, CSS, SVG, feeds,
 
 ## What is JSDA?
 
-**JSDA** (JavaScript Distributed Assets) treats JavaScript ESM modules as text-generation endpoints. Those modules can produce web assets such as HTML, CSS, SVG, and feeds, or model-friendly artifacts such as Markdown, prompts, reports, manifests, and structured text.
+**JSDA** (JavaScript Driven Assets) treats JavaScript ESM modules as text-generation endpoints. Those modules can produce web assets such as HTML, CSS, SVG, and feeds, or model-friendly artifacts such as Markdown, prompts, reports, manifests, and structured text.
 
 > **Learn more**: https://github.com/rnd-pro/jsda
 
