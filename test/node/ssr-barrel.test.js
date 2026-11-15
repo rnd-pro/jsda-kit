@@ -2,6 +2,34 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { wcSsr } from '../../node/wcSsr.js';
 
+describe('SSR imports within the same millisecond', () => {
+  for (let fixture of [
+    'iso-greeting.js',
+    'barrel-import-export.js',
+    'barrel-side-effect.js',
+    'barrel-multiline.js',
+  ]) {
+    it(`renders ${fixture} in every session with a fixed clock`, async (t) => {
+      t.mock.method(Date, 'now', () => 0);
+      let direct = fixture === 'iso-greeting.js';
+      let html = direct
+        ? '<iso-greeting></iso-greeting>'
+        : '<barrel-comp-a></barrel-comp-a><barrel-comp-b></barrel-comp-b>';
+      let expected = direct ? ['Hello, World!'] : ['Component Alpha', 'Component Beta'];
+
+      for (let session = 1; session <= 3; session++) {
+        let result = await wcSsr(html, {
+          imports: [`./test/fixtures/components/${fixture}`],
+        });
+        for (let content of expected) {
+          assert.ok(result.includes(content), `Session ${session} should render ${content}`);
+        }
+        assert.ok(result.includes('<style>'), `Session ${session} should render rootStyles`);
+      }
+    });
+  }
+});
+
 describe('SSR single component direct import', () => {
   it('multi-session: single component renders on SECOND call (cache-busting)', async () => {
     let html = '<div><iso-greeting></iso-greeting></div>';

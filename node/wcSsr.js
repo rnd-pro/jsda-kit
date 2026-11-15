@@ -4,6 +4,8 @@ import { SSR } from '@symbiotejs/symbiote/node/SSR.js';
 import { Log } from './Log.js';
 import pth from './pth.js';
 
+let ssrImportId = 0;
+
 /**
  * @typedef {Object} WcSsrOptions
  * @property {Object<string, string>} [data] Data to inject before SSR
@@ -21,7 +23,8 @@ import pth from './pth.js';
  * @param {string[]} imports
  */
 async function loadSsrImports(imports) {
-  let ts = '?ssr=' + Date.now();
+  // Consecutive sessions can start within the same millisecond.
+  let importQuery = '?ssr=' + ++ssrImportId;
   for (let imp of imports) {
     let fileUrl = pth(imp, true);
     let filePath = fileURLToPath(fileUrl);
@@ -61,7 +64,7 @@ async function loadSsrImports(imports) {
       for (let specifier of barrelSpecifiers) {
         let resolved = new URL(specifier, fileUrl).href;
         try {
-          await import(resolved + ts);
+          await import(resolved + importQuery);
         } catch (e) {
           Log.warn('[WC SSR] Failed to import re-export:', specifier, e.message);
         }
@@ -71,7 +74,7 @@ async function loadSsrImports(imports) {
     // Always import the file itself — it may define its own components
     // alongside barrel re-exports
     try {
-      await import(fileUrl + ts);
+      await import(fileUrl + importQuery);
     } catch (e) {
       Log.warn('[WC SSR] Failed to import:', imp, e.message);
     }
