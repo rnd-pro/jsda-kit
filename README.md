@@ -160,6 +160,16 @@ npx jsda ssg
 npx jsda build
 ```
 
+## Agent Skill
+
+Install the [JSDA-Kit skill](./SKILL.md) through the [skills.sh CLI](https://skills.sh/docs/cli) to give your coding agent guidance on asset modules, configuration, SSG, SSR, and server routes:
+
+```bash
+npx skills add rnd-pro/jsda-kit --skill jsda-kit
+```
+
+Run this command in your project directory. Add `--global` to install the skill for use across projects.
+
 ## Example: ESM as Assets
 
 ```javascript
